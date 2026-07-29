@@ -1,0 +1,2978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="凝馨的工作台">
+<meta name="theme-color" content="#FFB5C2">
+<title>凝馨的工作台</title>
+<style>
+/* ===== CSS Variables - 马卡龙配色 ===== */
+:root {
+  --bg-main: #FFF5F5;
+  --card-bg: #FFFFFF;
+  --pink: #FFB5C2;
+  --pink-light: #FFD6E0;
+  --mint: #B5EAD7;
+  --blue-light: #C7CEEA;
+  --purple-light: #E2D5F1;
+  --blue: #B5D8EB;
+  --yellow: #FFF1C1;
+  --text: #4A4A4A;
+  --text-light: #8a8a8a;
+  --border: #f0e0e0;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --nav-h: 60px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-main);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== Layout ===== */
+.app { display:flex; min-height:100vh; }
+
+/* Desktop sidebar */
+.sidebar {
+  width: 220px;
+  background: var(--card-bg);
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  position: fixed;
+  top:0; left:0; bottom:0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 12px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-header h1 {
+  font-size: 18px;
+  color: var(--text);
+  font-weight: 700;
+}
+.sidebar-header p {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--pink-light); }
+.nav-item.active {
+  background: var(--pink-light);
+  border-left-color: var(--pink);
+  font-weight: 600;
+}
+.nav-item .nav-icon { font-size: 18px; width: 24px; text-align:center; }
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  padding-bottom: 80px;
+  margin-left: 220px;
+  max-width: 900px;
+}
+
+/* Mobile bottom tab */
+.mobile-tabbar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  z-index: 200;
+  height: var(--nav-h);
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 10px;
+  text-decoration: none;
+  flex: 1;
+  padding: 6px 0;
+  transition: color 0.2s;
+}
+.tab-item.active { color: var(--pink); }
+.tab-item .tab-icon { font-size: 20px; }
+
+/* Mobile: show more modules via overlay */
+.mobile-more-overlay {
+  display: none;
+  position: fixed;
+  bottom: var(--nav-h); left: 0; right: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 199;
+}
+.mobile-more-panel {
+  background: var(--card-bg);
+  border-radius: 20px 20px 0 0;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.mobile-more-panel .more-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 10px 4px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--text);
+  text-align: center;
+}
+.mobile-more-panel .more-item:hover { background: var(--pink-light); }
+.mobile-more-panel .more-item .more-icon { font-size: 24px; }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.card h2 {
+  font-size: 17px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card h3 {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.section-title {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* ===== Form Elements ===== */
+input[type="text"], input[type="number"], input[type="date"], textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  background: #FAFAFA;
+  outline: none;
+  transition: border 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--pink); }
+textarea { resize: vertical; min-height: 60px; }
+
+label.field-label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+label.field-label:first-child { margin-top: 0; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: white;
+  background: var(--pink);
+}
+.btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn-mint { background: var(--mint); color: var(--text); }
+.btn-blue { background: var(--blue); color: var(--text); }
+.btn-purple { background: var(--purple-light); color: var(--text); }
+.btn-danger { background: #ff9999; }
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--pink);
+  color: var(--pink);
+}
+.btn-block { width: 100%; }
+
+/* Checkbox */
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+.check-item input[type="checkbox"] {
+  width: 20px; height: 20px;
+  accent-color: var(--pink);
+  cursor: pointer;
+}
+.check-item.checked { text-decoration: line-through; color: var(--text-light); }
+
+/* Tag pills */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin: 2px;
+}
+.tag-pink { background: var(--pink-light); color: #d4677a; }
+.tag-mint { background: var(--mint); color: #5a9b7a; }
+.tag-blue { background: var(--blue); color: #4a7a9b; }
+.tag-purple { background: var(--purple-light); color: #7a5a9b; }
+.tag-yellow { background: var(--yellow); color: #9b8a4a; }
+
+/* Progress bar */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--mint));
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+/* Module views */
+.module-view { display: none; }
+.module-view.active { display: block; }
+
+.module-header {
+  margin-bottom: 16px;
+}
+.module-header h1 {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.module-header p {
+  color: var(--text-light);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Date display */
+.date-display {
+  background: linear-gradient(135deg, var(--pink-light), var(--purple-light));
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.date-display .date-text { font-size: 18px; font-weight: 700; }
+.date-display .week-text { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+
+/* Tip box */
+.tip-box {
+  background: var(--yellow);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  margin: 12px 0;
+  line-height: 1.7;
+}
+
+/* List items */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid #f5f0f0;
+}
+.list-item:last-child { border-bottom: none; }
+
+/* Expense entry */
+.expense-row {
+  display: grid;
+  grid-template-columns: 1fr 100px 90px auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.expense-cat-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+/* Dashboard grid */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.dash-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.dash-card .dash-icon { font-size: 28px; }
+.dash-card .dash-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+.dash-card .dash-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+.dash-card.done { opacity: 0.6; }
+.dash-card.done .dash-value::after { content: ' ✓'; color: var(--mint); }
+
+/* Word card */
+.word-card {
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.word-card .word { font-size: 28px; font-weight: 700; }
+.word-card .phonetic { font-size: 16px; color: var(--text-light); margin: 6px 0; }
+.word-card .meaning { font-size: 16px; margin: 8px 0; }
+.word-card .example { font-size: 13px; color: var(--text-light); font-style: italic; margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px; }
+
+/* Stats row */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.stat-pill {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+}
+.stat-pill .stat-num { font-weight: 700; font-size: 16px; }
+
+/* History toggle */
+.history-toggle {
+  cursor: pointer;
+  color: var(--pink);
+  font-size: 13px;
+  margin: 8px 0;
+  display: inline-block;
+}
+
+/* History panel */
+.history-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s;
+}
+.history-panel.open { max-height: 2000px; }
+
+/* Mode toggle */
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.mode-toggle .mode-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.mode-toggle .mode-btn.active {
+  border-color: var(--pink);
+  background: var(--pink-light);
+  color: #d4677a;
+}
+
+/* Status selector */
+.status-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.status-selector label {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.status-selector input[type="radio"] { display: none; }
+.status-selector input[type="radio"]:checked + label {
+  border-color: var(--pink);
+  background: var(--pink-light);
+}
+
+/* Subject rotation display */
+.subject-display {
+  background: linear-gradient(135deg, var(--mint), var(--blue-light));
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.subject-display .subj-label { font-size: 13px; color: var(--text-light); }
+.subject-display .subj-name { font-size: 24px; font-weight: 700; margin-top: 4px; }
+
+/* Delete button */
+.del-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+}
+.del-btn:hover { color: #ff6666; }
+
+/* Tip text */
+.hint { font-size: 12px; color: var(--text-light); margin-top: 6px; }
+
+/* Content block */
+.content-block {
+  background: #FAFAFA;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin: 10px 0;
+}
+.content-block .block-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.content-block .block-content {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #555;
+}
+
+/* Weekly material card */
+.material-card {
+  background: linear-gradient(135deg, var(--purple-light), var(--pink-light));
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.material-card .mat-title { font-weight: 700; font-size: 14px; }
+.material-card .mat-keyword { font-size: 12px; color: #d4677a; margin: 4px 0; }
+.material-card .mat-desc { font-size: 13px; color: #555; }
+
+/* Quiz area */
+.quiz-area {
+  background: var(--mint);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .mobile-tabbar { display: flex; }
+  .main-content {
+    margin-left: 0;
+    padding: 14px;
+    padding-bottom: 80px;
+  }
+  .card { padding: 14px; }
+  .module-header h1 { font-size: 19px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .expense-row {
+    grid-template-columns: 1fr 80px 70px auto;
+    font-size: 13px;
+  }
+  .stats-row { gap: 8px; }
+  .stat-pill { padding: 6px 12px; font-size: 12px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--pink-light); border-radius: 3px; }
+
+/* Fade in animation */
+@keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+.module-view.active { animation: fadeIn 0.3s ease; }
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+/* Grid helpers */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.flex-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.text-center { text-align: center; }
+.text-sm { font-size: 13px; }
+.text-muted { color: var(--text-light); }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Desktop Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>🌸 凝馨的工作台</h1>
+      <p>认真生活，温柔成长</p>
+    </div>
+    <a class="nav-item active" data-module="dashboard" onclick="switchModule('dashboard')">
+      <span class="nav-icon">📋</span><span>每日总看板</span>
+    </a>
+    <a class="nav-item" data-module="summer" onclick="switchModule('summer')">
+      <span class="nav-icon">📖</span><span>暑假预习</span>
+    </a>
+    <a class="nav-item" data-module="study" onclick="switchModule('study')">
+      <span class="nav-icon">📚</span><span>开学日常学习</span>
+    </a>
+    <a class="nav-item" data-module="finance" onclick="switchModule('finance')">
+      <span class="nav-icon">💰</span><span>理财存钱台账</span>
+    </a>
+    <a class="nav-item" data-module="weight" onclick="switchModule('weight')">
+      <span class="nav-icon">⚖️</span><span>体重体态管理</span>
+    </a>
+    <a class="nav-item" data-module="financial" onclick="switchModule('financial')">
+      <span class="nav-icon">💡</span><span>财商思维认知</span>
+    </a>
+    <a class="nav-item" data-module="affairs" onclick="switchModule('affairs')">
+      <span class="nav-icon">🌍</span><span>时政热点解析</span>
+    </a>
+    <a class="nav-item" data-module="eq" onclick="switchModule('eq')">
+      <span class="nav-icon">🧠</span><span>情商思维输入</span>
+    </a>
+    <a class="nav-item" data-module="english" onclick="switchModule('english')">
+      <span class="nav-icon">🇬🇧</span><span>英语综合学习</span>
+    </a>
+    <a class="nav-item" data-module="plan" onclick="switchModule('plan')">
+      <span class="nav-icon">🖊️</span><span>每日计划</span>
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ========== Module 10: Dashboard ========== -->
+    <div class="module-view active" id="view-dashboard">
+      <div class="module-header">
+        <h1>📋 每日总看板</h1>
+        <p>一览今日所有模块完成情况</p>
+      </div>
+      <div class="date-display" id="dashDate"></div>
+      <div class="tip-box" id="dashTip"></div>
+      <div class="dash-grid" id="dashGrid"></div>
+    </div>
+
+    <!-- ========== Module 1: Summer Preview ========== -->
+    <div class="module-view" id="view-summer">
+      <div class="module-header">
+        <h1>📖 暑假预习</h1>
+        <p>理科轮换预习，稳步前行</p>
+      </div>
+      <div class="subject-display" id="summerSubject"></div>
+      <div class="card">
+        <h2>⏱ 今日预习记录</h2>
+        <label class="field-label">📅 今日预习科目</label>
+        <input type="text" id="summerSubjectInput" placeholder="今日预习科目">
+        <label class="field-label">⏱ 实际学习时长（分钟）</label>
+        <input type="number" id="summerDuration" placeholder="如：90" min="0">
+        <label class="field-label mt-12">✅ 完成勾选</label>
+        <div id="summerChecklist"></div>
+        <label class="field-label mt-12">❓ 遗留疑问清单</label>
+        <textarea id="summerQuestions" placeholder="记录今天预习中遗留的疑问..."></textarea>
+        <label class="field-label">📈 本周预习进度（已学章节/未学章节）</label>
+        <textarea id="summerProgress" placeholder="如：数学第1-3章已完成，第4章未学..."></textarea>
+        <label class="field-label mt-12">⭐ 自我状态</label>
+        <div class="status-selector" id="summerStatus">
+          <input type="radio" name="summerStatus" id="ss1" value="高效"><label for="ss1">🔥 高效</label>
+          <input type="radio" name="summerStatus" id="ss2" value="一般"><label for="ss2">😐 一般</label>
+          <input type="radio" name="summerStatus" id="ss3" value="摆烂"><label for="ss3"> 😴 摆烂</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveSummer()">💾 保存今日记录</button>
+      </div>
+      <div class="card">
+        <h2>📅 历史记录</h2>
+        <div id="summerHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 2: Daily Study ========== -->
+    <div class="module-view" id="view-study">
+      <div class="module-header">
+        <h1>📚 开学日常学习</h1>
+        <p>课堂记录，错题整理，稳步提升</p>
+      </div>
+      <div class="card">
+        <h2>📝 今日学习记录</h2>
+        <label class="field-label">📅 日期</label>
+        <input type="date" id="studyDate">
+        <label class="field-label">📖 今日课堂科目</label>
+        <input type="text" id="studySubjects" placeholder="如：数学、物理、英语...">
+        <label class="field-label">🔍 课前10分钟微预习疑问</label>
+        <textarea id="studyPreQuestions" placeholder="课前快速预习发现的疑问..."></textarea>
+        <label class="field-label">📝 课堂没听懂的知识点</label>
+        <textarea id="studyUnclear" placeholder="课堂中没听懂的地方..."></textarea>
+        <label class="field-label">❌ 错题记录</label>
+        <textarea id="studyErrors" placeholder="今日错题，记录题目和错误原因..."></textarea>
+        <label class="field-label">🗣 英语任务</label>
+        <div id="studyEnglishTasks"></div>
+        <label class="field-label mt-12">⭐ 今日状态</label>
+        <div class="status-selector" id="studyStatus">
+          <input type="radio" name="studyStatus" id="st1" value="高效"><label for="st1">🔥 高效</label>
+          <input type="radio" name="studyStatus" id="st2" value="一般"><label for="st2">😐 一般</label>
+          <input type="radio" name="studyStatus" id="st3" value="摆烂"><label for="st3">😴 摆烂</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveStudy()">💾 保存今日记录</button>
+      </div>
+      <div class="card">
+        <h2>📅 历史记录</h2>
+        <div id="studyHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 3: Finance ========== -->
+    <div class="module-view" id="view-finance">
+      <div class="module-header">
+        <h1>💰 理财&存钱支出台账</h1>
+        <p>慢慢养成低物欲习惯，理性消费，好好规划沪漂生活</p>
+      </div>
+      <div class="tip-box">
+        💡 慢慢养成低物欲习惯，理性消费，好好规划沪漂生活。禁止股票基金等高风险投资！
+      </div>
+
+      <!-- Expense Entry -->
+      <div class="card">
+        <h2>💸 当日支出录入</h2>
+        <div class="expense-row">
+          <input type="text" id="expItem" placeholder="消费项目">
+          <input type="number" id="expAmount" placeholder="金额" min="0">
+          <select id="expCategory">
+            <option value="餐饮">餐饮</option>
+            <option value="房租">房租</option>
+            <option value="购物">购物</option>
+            <option value="交通">交通</option>
+            <option value="娱乐">娱乐</option>
+            <option value="学习">学习</option>
+            <option value="其他">其他</option>
+          </select>
+          <button class="btn btn-sm" onclick="addExpense()">➕</button>
+        </div>
+        <div class="flex-row mt-8">
+          <span class="text-sm text-muted">今日总开销：</span>
+          <span class="stat-pill" id="todayTotal">¥0</span>
+          <span class="text-sm text-muted" style="margin-left:auto">本月总开销：</span>
+          <span class="stat-pill" id="monthTotal">¥0</span>
+        </div>
+        <div id="todayExpenses" class="mt-12"></div>
+      </div>
+
+      <!-- Monthly Stats -->
+      <div class="card">
+        <h2>📊 月度消费统计</h2>
+        <div id="monthStats"></div>
+      </div>
+
+      <!-- Finance Overview -->
+      <div class="card">
+        <h2>📋 财务概况</h2>
+        <div class="grid-2">
+          <div>
+            <label class="field-label">📅 周期</label>
+            <select id="finPeriod">
+              <option value="周">周</option>
+              <option value="月">月</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">💵 本周/月总收入</label>
+            <input type="number" id="finIncome" placeholder="0" min="0">
+          </div>
+          <div>
+            <label class="field-label">🏦 当前储蓄余额</label>
+            <input type="number" id="finSavings" placeholder="0" min="0">
+          </div>
+          <div>
+            <label class="field-label">🎯 短期存钱目标</label>
+            <input type="text" id="finGoal" placeholder="如：存够5000元">
+          </div>
+        </div>
+        <label class="field-label">💸 支出拆分（刚需/欲望冲动/其他）</label>
+        <textarea id="finSplit" placeholder="刚需：xxx元 | 欲望冲动：xxx元 | 其他：xxx元"></textarea>
+        <label class="field-label">📝 复盘</label>
+        <textarea id="finReview" placeholder="本周/本月消费复盘..."></textarea>
+        <button class="btn btn-block mt-12" onclick="saveFinanceOverview()">💾 保存财务概况</button>
+      </div>
+
+      <!-- History -->
+      <div class="card">
+        <h2>📅 历史账单</h2>
+        <div id="financeHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 4: Weight ========== -->
+    <div class="module-view" id="view-weight">
+      <div class="module-header">
+        <h1>⚖️ 体重体态管理</h1>
+        <p>健康记录，温柔对待自己的身体</p>
+      </div>
+      <div class="card">
+        <h2>📊 今日记录</h2>
+        <label class="field-label">📅 记录日期</label>
+        <input type="date" id="weightDate">
+        <label class="field-label">⚖️ 体重（kg）</label>
+        <input type="number" id="weightKg" placeholder="如：55.5" step="0.1" min="30" max="150">
+        <label class="field-label">🍱 简单饮食记录</label>
+        <textarea id="weightDiet" placeholder="早：xxx | 午：xxx | 晚：xxx"></textarea>
+        <label class="field-label">🏊 运动打卡</label>
+        <div class="status-selector" id="weightExercise">
+          <input type="radio" name="weightExercise" id="we1" value="游泳"><label for="we1">🏊 游泳</label>
+          <input type="radio" name="weightExercise" id="we2" value="其他运动"><label for="we2">🏃 其他运动</label>
+          <input type="radio" name="weightExercise" id="we3" value="今日休息"><label for="we3">😴 今日休息</label>
+        </div>
+        <label class="field-label mt-12">😴 睡眠时长（小时，允许6-10小时波动）</label>
+        <input type="number" id="weightSleep" placeholder="如：7.5" step="0.5" min="0" max="24">
+        <label class="field-label">💭 身体感受</label>
+        <textarea id="weightFeeling" placeholder="今日身体状态如何..."></textarea>
+        <button class="btn btn-block mt-12" onclick="saveWeight()">💾 保存记录</button>
+      </div>
+      <div class="card">
+        <h2>📈 体重趋势</h2>
+        <div id="weightHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 5: Financial Thinking ========== -->
+    <div class="module-view" id="view-financial">
+      <div class="module-header">
+        <h1>💡 财商思维认知</h1>
+        <p>每周推荐素材，培养青少年基础财商</p>
+      </div>
+      <div class="card">
+        <h2>📋 本周推荐素材清单</h2>
+        <p class="text-sm text-muted">基于当前周数自动生成，本周内保持一致</p>
+        <div id="financialMaterials" class="mt-12"></div>
+      </div>
+      <div class="card">
+        <h2>📝 我的财商笔记</h2>
+        <label class="field-label">🎞 素材主题</label>
+        <input type="text" id="finThinkTopic" placeholder="本周学习的素材主题">
+        <label class="field-label">💡 学到的金钱认知</label>
+        <textarea id="finThinkLearning" placeholder="记录你学到的金钱认知..."></textarea>
+        <label class="field-label">🤔 对我现阶段的启发</label>
+        <textarea id="finThinkInspiration" placeholder="这个素材对你有什么启发..."></textarea>
+        <label class="field-label mt-12">✅ 完成勾选</label>
+        <div class="check-item">
+          <input type="checkbox" id="finThinkDone">
+          <label for="finThinkDone">已完成本周素材学习</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveFinancialThinking()">💾 保存笔记</button>
+      </div>
+      <div class="card">
+        <h2>📅 历史笔记</h2>
+        <div id="financialThinkingHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 6: Current Affairs ========== -->
+    <div class="module-view" id="view-affairs">
+      <div class="module-header">
+        <h1>🌍 时政热点解析库</h1>
+        <p>关注时事，独立思考，培养大局观</p>
+      </div>
+      <div class="card">
+        <h2>📰 时政推荐清单</h2>
+        <p class="text-sm text-muted">自动生成，每周更新</p>
+        <div id="affairsMaterials" class="mt-12"></div>
+      </div>
+      <div class="card">
+        <h2>📝 我的时政笔记</h2>
+        <label class="field-label">📰 事件名称</label>
+        <input type="text" id="affairsEvent" placeholder="事件标题">
+        <label class="field-label">📍 事件简单经过</label>
+        <textarea id="affairsProcess" placeholder="简述事件经过..."></textarea>
+        <label class="field-label">🔎 背后深层逻辑</label>
+        <textarea id="affairsLogic" placeholder="分析事件背后的深层逻辑..."></textarea>
+        <label class="field-label">✨ 我的思考</label>
+        <textarea id="affairsThought" placeholder="你的独立思考..."></textarea>
+        <label class="field-label mt-12">✅ 完成勾选</label>
+        <div class="check-item">
+          <input type="checkbox" id="affairsDone">
+          <label for="affairsDone">已完成本周时政学习</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveAffairs()">💾 保存笔记</button>
+      </div>
+      <div class="card">
+        <h2>📅 历史笔记</h2>
+        <div id="affairsHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 7: EQ Thinking ========== -->
+    <div class="module-view" id="view-eq">
+      <div class="module-header">
+        <h1>🧠 认知情商思维输入库</h1>
+        <p>人物采访、思维成长、人情社会</p>
+      </div>
+      <div class="card">
+        <h2>📋 本周情商思维素材清单</h2>
+        <p class="text-sm text-muted">自动生成，每周更新</p>
+        <div id="eqMaterials" class="mt-12"></div>
+      </div>
+      <div class="card">
+        <h2>📝 我的情商思维笔记</h2>
+        <label class="field-label">🎞 素材主题</label>
+        <input type="text" id="eqTopic" placeholder="本周学习的素材主题">
+        <label class="field-label">💡 核心观点摘抄</label>
+        <textarea id="eqKeyPoints" placeholder="摘抄核心观点..."></textarea>
+        <label class="field-label">🤝 人情&人性洞察收获</label>
+        <textarea id="eqInsight" placeholder="关于人情世故的洞察..."></textarea>
+        <label class="field-label">✨ 现实可以借鉴的行动点</label>
+        <textarea id="eqAction" placeholder="可以在现实中借鉴的行动..."></textarea>
+        <label class="field-label mt-12">✅ 完成勾选</label>
+        <div class="check-item">
+          <input type="checkbox" id="eqDone">
+          <label for="eqDone">已完成本周情商思维学习</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveEq()">💾 保存笔记</button>
+      </div>
+      <div class="card">
+        <h2>📅 历史笔记</h2>
+        <div id="eqHistory"></div>
+      </div>
+    </div>
+
+    <!-- ========== Module 8: English ========== -->
+    <div class="module-view" id="view-english">
+      <div class="module-header">
+        <h1>🇬🇧 英语综合学习</h1>
+        <p>单词闯关 · 语法专题 · 雅思入门</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row" id="englishStats"></div>
+
+      <!-- Word Learning -->
+      <div class="card">
+        <h2>📖 今日单词闯关</h2>
+        <div class="mode-toggle">
+          <div class="mode-btn active" onclick="setWordMode('new', this)">新词学习</div>
+          <div class="mode-btn" onclick="setWordMode('review', this)">复习词</div>
+        </div>
+        <div id="wordCardArea"></div>
+        <div class="flex-row mt-12">
+          <button class="btn btn-mint btn-sm" onclick="prevWord()">⬅ 上一个</button>
+          <button class="btn btn-sm" onclick="showWordMeaning()">👁 显示释义</button>
+          <button class="btn btn-blue btn-sm" onclick="markWordKnown()">✅ 已掌握</button>
+          <button class="btn btn-sm" onclick="markWordWrong()">❌ 记错了</button>
+          <button class="btn btn-sm" onclick="nextWord()">下一个 ➡</button>
+        </div>
+      </div>
+
+      <!-- Wrong Words -->
+      <div class="card">
+        <h2>❌ 记错单词收集本</h2>
+        <div id="wrongWords"></div>
+      </div>
+
+      <!-- Grammar -->
+      <div class="card">
+        <h2>📖 本周语法专题</h2>
+        <div id="grammarTopic"></div>
+        <label class="field-label mt-12">📝 语法学习笔记</label>
+        <textarea id="grammarNotes" placeholder="记录你的语法学习笔记..."></textarea>
+        <div class="check-item mt-8">
+          <input type="checkbox" id="grammarDone">
+          <label for="grammarDone">已完成本周语法学习</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveGrammarNotes()">💾 保存语法笔记</button>
+      </div>
+
+      <!-- IELTS -->
+      <div class="card">
+        <h2>✈ 本周雅思入门专题</h2>
+        <div id="ieltsTopic"></div>
+        <label class="field-label mt-12">📝 雅思学习笔记</label>
+        <textarea id="ieltsNotes" placeholder="记录你的雅思学习笔记..."></textarea>
+        <div class="check-item mt-8">
+          <input type="checkbox" id="ieltsDone">
+          <label for="ieltsDone">已完成本周雅思入门浏览</label>
+        </div>
+        <button class="btn btn-block mt-12" onclick="saveIeltsNotes()">💾 保存雅思笔记</button>
+      </div>
+    </div>
+
+    <!-- ========== Module 9: Daily Plan ========== -->
+    <div class="module-view" id="view-plan">
+      <div class="module-header">
+        <h1>🖊️ 每日计划</h1>
+        <p>今日待办，逐一击破</p>
+      </div>
+      <div class="date-display" id="planDate"></div>
+      <div class="card">
+        <h2>✅ 今日待办清单</h2>
+        <div class="flex-row mb-12">
+          <input type="text" id="newTask" placeholder="输入新任务..." style="flex:1">
+          <button class="btn btn-sm" onclick="addTask()">➕ 添加</button>
+        </div>
+        <div class="stats-row" id="planStats"></div>
+        <div id="taskList"></div>
+      </div>
+      <div class="card">
+        <h2>📅 历史计划</h2>
+        <input type="date" id="planHistoryDate" onchange="loadHistoryPlan()">
+        <div id="planHistory" class="mt-12"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Mobile Tab Bar -->
+  <nav class="mobile-tabbar" id="tabbar">
+    <a class="tab-item active" data-module="dashboard" onclick="switchModule('dashboard')">
+      <span class="tab-icon">📋</span><span>看板</span>
+    </a>
+    <a class="tab-item" data-module="summer" onclick="switchModule('summer')">
+      <span class="tab-icon">📖</span><span>预习</span>
+    </a>
+    <a class="tab-item" data-module="study" onclick="switchModule('study')">
+      <span class="tab-icon">📚</span><span>学习</span>
+    </a>
+    <a class="tab-item" data-module="finance" onclick="switchModule('finance')">
+      <span class="tab-icon">💰</span><span>理财</span>
+    </a>
+    <a class="tab-item" onclick="toggleMobileMore()">
+      <span class="tab-icon">⋯</span><span>更多</span>
+    </a>
+  </nav>
+
+  <!-- Mobile More Overlay -->
+  <div class="mobile-more-overlay" id="mobileMoreOverlay" onclick="closeMobileMore()">
+    <div class="mobile-more-panel" onclick="event.stopPropagation()">
+      <div class="more-item" onclick="switchModule('weight');closeMobileMore()">
+        <span class="more-icon">⚖️</span><span>体重</span>
+      </div>
+      <div class="more-item" onclick="switchModule('financial');closeMobileMore()">
+        <span class="more-icon">💡</span><span>财商</span>
+      </div>
+      <div class="more-item" onclick="switchModule('affairs');closeMobileMore()">
+        <span class="more-icon">🌍</span><span>时政</span>
+      </div>
+      <div class="more-item" onclick="switchModule('eq');closeMobileMore()">
+        <span class="more-icon">🧠</span><span>情商</span>
+      </div>
+      <div class="more-item" onclick="switchModule('english');closeMobileMore()">
+        <span class="more-icon">🇬🇧</span><span>英语</span>
+      </div>
+      <div class="more-item" onclick="switchModule('plan');closeMobileMore()">
+        <span class="more-icon">🖊️</span><span>计划</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  凝馨的工作台 - 核心逻辑
+// ============================================================
+
+// ===== Utility Functions =====
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getISOWeek() {
+  const d = new Date();
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() + 4 - day);
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+}
+
+function getWeekKey() {
+  return new Date().getFullYear() + '-W' + getISOWeek();
+}
+
+function loadData(key, defaultVal) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : (defaultVal !== undefined ? defaultVal : {});
+  } catch(e) { return defaultVal !== undefined ? defaultVal : {}; }
+}
+
+function saveData(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { console.error('Save error:', e); }
+}
+
+function formatDateDisplay(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const days = ['日','一','二','三','四','五','六'];
+  return d.getMonth()+1 + '月' + d.getDate() + '日 星期' + days[d.getDay()];
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+// ===== Module Switching =====
+function switchModule(name) {
+  document.querySelectorAll('.module-view').forEach(v => v.classList.remove('active'));
+  const view = document.getElementById('view-' + name);
+  if (view) view.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll(`.nav-item[data-module="${name}"]`).forEach(n => n.classList.add('active'));
+  document.querySelectorAll(`.tab-item[data-module="${name}"]`).forEach(n => n.classList.add('active'));
+
+  window.scrollTo(0, 0);
+
+  // Trigger module-specific init
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'summer') initSummer();
+  if (name === 'study') initStudy();
+  if (name === 'finance') initFinance();
+  if (name === 'weight') initWeight();
+  if (name === 'financial') initFinancial();
+  if (name === 'affairs') initAffairs();
+  if (name === 'eq') initEq();
+  if (name === 'english') initEnglish();
+  if (name === 'plan') initPlan();
+}
+
+// ===== Mobile More Panel =====
+function toggleMobileMore() {
+  document.getElementById('mobileMoreOverlay').style.display = 'block';
+}
+function closeMobileMore() {
+  document.getElementById('mobileMoreOverlay').style.display = 'none';
+}
+
+// ============================================================
+//  Module 10: Dashboard
+// ============================================================
+const dashboardTips = [
+  '今天也要好好吃饭、好好学习、好好休息哦 🌸',
+  '每一个小目标的完成，都是通往大梦想的一步 💪',
+  '不要和别人比进度，只和昨天的自己比 🌱',
+  '慢慢来，比较快。保持自己的节奏 🐢',
+  '今天的事情今天做，明天还有明天的精彩 ✨',
+  '记得喝水，记得拉伸，记得微笑 😊',
+  '理财从记好每一笔账开始 💰',
+  '英语每天进步一点点，坚持就是胜利 🇬🇧',
+  '睡眠是最好的护肤品，今晚早点休息 😴',
+  '心态决定状态，状态决定结果 🌟'
+];
+
+function renderDashboard() {
+  const today = todayStr();
+  const week = getISOWeek();
+
+  document.getElementById('dashDate').innerHTML = `
+    <div class="date-text">${formatDateDisplay(today)}</div>
+    <div class="week-text">第${week}周</div>
+  `;
+
+  // Tip of the day
+  let tips = loadData('nx_dashboard_tips', {});
+  if (!tips[today]) {
+    tips[today] = dashboardTips[Math.floor(Math.random() * dashboardTips.length)];
+    saveData('nx_dashboard_tips', tips);
+  }
+  document.getElementById('dashTip').innerHTML = '💡 ' + tips[today];
+
+  // Check each module status
+  const modules = [
+    { id: 'summer', icon: '📖', label: '暑假预习', key: 'nx_summer_preview' },
+    { id: 'study', icon: '📚', label: '日常学习', key: 'nx_daily_study' },
+    { id: 'finance', icon: '💰', label: '今日记账', key: 'nx_finance' },
+    { id: 'weight', icon: '⚖️', label: '体重记录', key: 'nx_weight' },
+    { id: 'financial', icon: '💡', label: '财商笔记', key: 'nx_financial_thinking' },
+    { id: 'affairs', icon: '🌍', label: '时政笔记', key: 'nx_current_affairs' },
+    { id: 'eq', icon: '🧠', label: '情商笔记', key: 'nx_eq_thinking' },
+    { id: 'english', icon: '🇬🇧', label: '英语学习', key: 'nx_english_words' },
+    { id: 'plan', icon: '🖊️', label: '每日计划', key: 'nx_daily_plans' }
+  ];
+
+  let html = '';
+  modules.forEach(m => {
+    const data = loadData(m.key, {});
+    let done = false;
+    let value = '未记录';
+
+    if (m.id === 'summer') {
+      const rec = data[today];
+      if (rec) { done = rec.saved; value = rec.subject || '已记录'; }
+    } else if (m.id === 'study') {
+      const rec = data[today];
+      if (rec) { done = rec.saved; value = rec.subjects ? rec.subjects.substring(0,8) : '已记录'; }
+    } else if (m.id === 'finance') {
+      if (data.expenses) {
+        const todayExp = data.expenses.filter(e => e.date === today);
+        if (todayExp.length > 0) { done = true; value = '¥' + todayExp.reduce((s,e)=>s+e.amount,0); }
+      }
+    } else if (m.id === 'weight') {
+      const rec = data[today];
+      if (rec) { done = true; value = rec.weight + 'kg'; }
+    } else if (m.id === 'financial') {
+      const wk = getWeekKey();
+      if (data[wk] && data[wk].done) { done = true; value = '已完成'; }
+    } else if (m.id === 'affairs') {
+      const wk = getWeekKey();
+      if (data[wk] && data[wk].done) { done = true; value = '已完成'; }
+    } else if (m.id === 'eq') {
+      const wk = getWeekKey();
+      if (data[wk] && data[wk].done) { done = true; value = '已完成'; }
+    } else if (m.id === 'english') {
+      if (data.todayDate === today) { done = (data.todayNew || 0) + (data.todayReview || 0) > 0; value = (data.todayNew||0)+'新+'+(data.todayReview||0)+'复'; }
+    } else if (m.id === 'plan') {
+      const plans = loadData('nx_daily_plans', {});
+      const plan = plans[today];
+      if (plan && plan.length > 0) {
+        const completed = plan.filter(t => t.done).length;
+        done = completed === plan.length;
+        value = completed + '/' + plan.length;
+      }
+    }
+
+    html += `<div class="dash-card ${done ? 'done' : ''}" onclick="switchModule('${m.id}')">
+      <div class="dash-icon">${m.icon}</div>
+      <div class="dash-label">${m.label}</div>
+      <div class="dash-value">${value}</div>
+    </div>`;
+  });
+
+  document.getElementById('dashGrid').innerHTML = html;
+}
+
+// ============================================================
+//  Module 1: Summer Preview
+// ============================================================
+const summerChecklistItems = [
+  '课本圈画', '例题演算', '基础小题', '英语任务', '记录疑问'
+];
+
+function getSummerSubject() {
+  const day = new Date().getDay(); // 0=Sun, 1=Mon...
+  if (day === 0) return { subject: '休息日 - 英语复盘', isRest: true };
+  const rotation = ['数学', '物理', '化学', '数学', '物理', '化学']; // Mon=1→index0
+  return { subject: rotation[day - 1], isRest: false };
+}
+
+function initSummer() {
+  const subj = getSummerSubject();
+  document.getElementById('summerSubject').innerHTML = `
+    <div class="subj-label">📅 今日预习科目（自动轮换）</div>
+    <div class="subj-name">${subj.isRest ? '😴 ' : '📖 '}${subj.subject}</div>
+  `;
+
+  // Load today's data
+  const data = loadData('nx_summer_preview', {});
+  const today = todayStr();
+  const rec = data[today] || {};
+  document.getElementById('summerSubjectInput').value = rec.subject || subj.subject;
+  document.getElementById('summerDuration').value = rec.duration || '';
+  document.getElementById('summerQuestions').value = rec.questions || '';
+  document.getElementById('summerProgress').value = rec.progress || '';
+
+  // Checklist
+  const checks = rec.checklist || {};
+  let chHtml = '';
+  summerChecklistItems.forEach((item, i) => {
+    const checked = checks[item] ? 'checked' : '';
+    const isDone = checks[item] ? 'checked' : '';
+    chHtml += `<div class="check-item ${isDone}">
+      <input type="checkbox" id="summerChk${i}" ${checked}>
+      <label for="summerChk${i}">${item}</label>
+    </div>`;
+  });
+  document.getElementById('summerChecklist').innerHTML = chHtml;
+
+  // Status
+  if (rec.status) {
+    const radio = document.querySelector(`input[name="summerStatus"][value="${rec.status}"]`);
+    if (radio) radio.checked = true;
+  }
+
+  // History
+  renderSummerHistory();
+}
+
+function saveSummer() {
+  const data = loadData('nx_summer_preview', {});
+  const today = todayStr();
+  const checklist = {};
+  summerChecklistItems.forEach((item, i) => {
+    checklist[item] = document.getElementById('summerChk' + i).checked;
+  });
+  const statusRadio = document.querySelector('input[name="summerStatus"]:checked');
+  data[today] = {
+    subject: document.getElementById('summerSubjectInput').value,
+    duration: document.getElementById('summerDuration').value,
+    checklist: checklist,
+    questions: document.getElementById('summerQuestions').value,
+    progress: document.getElementById('summerProgress').value,
+    status: statusRadio ? statusRadio.value : '',
+    saved: true,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_summer_preview', data);
+  alert('✅ 暑假预习记录已保存！');
+  renderSummerHistory();
+}
+
+function renderSummerHistory() {
+  const data = loadData('nx_summer_preview', {});
+  const dates = Object.keys(data).sort().reverse();
+  if (dates.length === 0) {
+    document.getElementById('summerHistory').innerHTML = '<div class="empty-state">暂无历史记录</div>';
+    return;
+  }
+  let html = '';
+  dates.slice(0, 14).forEach(date => {
+    const r = data[date];
+    if (!r.saved) return;
+    const statusTag = r.status ? `<span class="tag tag-pink">${r.status}</span>` : '';
+    const duration = r.duration ? `⏱${r.duration}分钟` : '';
+    html += `<div class="list-item">
+      <div>
+        <div class="text-sm" style="font-weight:600">${formatDateDisplay(date)}</div>
+        <div class="text-sm text-muted">${escapeHtml(r.subject||'')} ${duration}</div>
+      </div>
+      <div>${statusTag}</div>
+    </div>`;
+  });
+  document.getElementById('summerHistory').innerHTML = html || '<div class="empty-state">暂无历史记录</div>';
+}
+
+// ============================================================
+//  Module 2: Daily Study
+// ============================================================
+const studyEnglishTasks = ['单词复习', '课文回顾', '听力练习'];
+
+function initStudy() {
+  const today = todayStr();
+  document.getElementById('studyDate').value = today;
+
+  const data = loadData('nx_daily_study', {});
+  const rec = data[today] || {};
+
+  document.getElementById('studySubjects').value = rec.subjects || '';
+  document.getElementById('studyPreQuestions').value = rec.preQuestions || '';
+  document.getElementById('studyUnclear').value = rec.unclear || '';
+  document.getElementById('studyErrors').value = rec.errors || '';
+
+  // English tasks
+  const engTasks = rec.englishTasks || {};
+  let engHtml = '';
+  studyEnglishTasks.forEach((task, i) => {
+    const checked = engTasks[task] ? 'checked' : '';
+    engHtml += `<div class="check-item">
+      <input type="checkbox" id="studyEng${i}" ${checked}>
+      <label for="studyEng${i}">${task}</label>
+    </div>`;
+  });
+  document.getElementById('studyEnglishTasks').innerHTML = engHtml;
+
+  // Status
+  if (rec.status) {
+    const radio = document.querySelector(`input[name="studyStatus"][value="${rec.status}"]`);
+    if (radio) radio.checked = true;
+  }
+
+  renderStudyHistory();
+}
+
+function saveStudy() {
+  const data = loadData('nx_daily_study', {});
+  const date = document.getElementById('studyDate').value || todayStr();
+  const englishTasks = {};
+  studyEnglishTasks.forEach((task, i) => {
+    englishTasks[task] = document.getElementById('studyEng' + i).checked;
+  });
+  const statusRadio = document.querySelector('input[name="studyStatus"]:checked');
+  data[date] = {
+    subjects: document.getElementById('studySubjects').value,
+    preQuestions: document.getElementById('studyPreQuestions').value,
+    unclear: document.getElementById('studyUnclear').value,
+    errors: document.getElementById('studyErrors').value,
+    englishTasks: englishTasks,
+    status: statusRadio ? statusRadio.value : '',
+    saved: true,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_daily_study', data);
+  alert('✅ 日常学习记录已保存！');
+  renderStudyHistory();
+}
+
+function renderStudyHistory() {
+  const data = loadData('nx_daily_study', {});
+  const dates = Object.keys(data).sort().reverse();
+  if (dates.length === 0) {
+    document.getElementById('studyHistory').innerHTML = '<div class="empty-state">暂无历史记录</div>';
+    return;
+  }
+  let html = '';
+  dates.slice(0, 14).forEach(date => {
+    const r = data[date];
+    if (!r.saved) return;
+    const statusTag = r.status ? `<span class="tag tag-mint">${r.status}</span>` : '';
+    html += `<div class="list-item">
+      <div>
+        <div class="text-sm" style="font-weight:600">${formatDateDisplay(date)}</div>
+        <div class="text-sm text-muted">${escapeHtml(r.subjects||'')}</div>
+      </div>
+      <div>${statusTag}</div>
+    </div>`;
+  });
+  document.getElementById('studyHistory').innerHTML = html || '<div class="empty-state">暂无历史记录</div>';
+}
+
+// ============================================================
+//  Module 3: Finance
+// ============================================================
+function initFinance() {
+  const data = loadData('nx_finance', { expenses: [], overview: {} });
+  if (!data.expenses) data.expenses = [];
+  if (!data.overview) data.overview = {};
+
+  // Load overview
+  document.getElementById('finPeriod').value = data.overview.period || '周';
+  document.getElementById('finIncome').value = data.overview.income || '';
+  document.getElementById('finSavings').value = data.overview.savings || '';
+  document.getElementById('finGoal').value = data.overview.goal || '';
+  document.getElementById('finSplit').value = data.overview.split || '';
+  document.getElementById('finReview').value = data.overview.review || '';
+
+  renderTodayExpenses();
+  renderMonthStats();
+  renderFinanceHistory();
+}
+
+function addExpense() {
+  const item = document.getElementById('expItem').value.trim();
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  const category = document.getElementById('expCategory').value;
+  if (!item || !amount || amount <= 0) { alert('请填写消费项目和金额'); return; }
+
+  const data = loadData('nx_finance', { expenses: [] });
+  if (!data.expenses) data.expenses = [];
+  data.expenses.push({
+    id: Date.now(),
+    date: todayStr(),
+    item: item,
+    amount: amount,
+    category: category
+  });
+  saveData('nx_finance', data);
+
+  document.getElementById('expItem').value = '';
+  document.getElementById('expAmount').value = '';
+  renderTodayExpenses();
+  renderMonthStats();
+  renderFinanceHistory();
+}
+
+function deleteExpense(id) {
+  const data = loadData('nx_finance', { expenses: [] });
+  data.expenses = data.expenses.filter(e => e.id !== id);
+  saveData('nx_finance', data);
+  renderTodayExpenses();
+  renderMonthStats();
+  renderFinanceHistory();
+}
+
+function renderTodayExpenses() {
+  const data = loadData('nx_finance', { expenses: [] });
+  const today = todayStr();
+  const todayExp = (data.expenses || []).filter(e => e.date === today);
+
+  const total = todayExp.reduce((s, e) => s + e.amount, 0);
+  document.getElementById('todayTotal').textContent = '¥' + total.toFixed(2);
+
+  // Month total
+  const now = new Date();
+  const monthExp = (data.expenses || []).filter(e => {
+    const d = new Date(e.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const monthTotal = monthExp.reduce((s, e) => s + e.amount, 0);
+  document.getElementById('monthTotal').textContent = '¥' + monthTotal.toFixed(2);
+
+  if (todayExp.length === 0) {
+    document.getElementById('todayExpenses').innerHTML = '<div class="empty-state">今日暂无支出记录</div>';
+    return;
+  }
+
+  const catColors = {
+    '餐饮': 'tag-mint', '房租': 'tag-pink', '购物': 'tag-purple',
+    '交通': 'tag-blue', '娱乐': 'tag-yellow', '学习': 'tag-mint', '其他': 'tag-pink'
+  };
+
+  let html = '';
+  todayExp.forEach(e => {
+    html += `<div class="list-item">
+      <div>
+        <div class="text-sm" style="font-weight:500">${escapeHtml(e.item)}</div>
+        <span class="expense-cat-tag ${catColors[e.category]||'tag-pink'}">${e.category}</span>
+      </div>
+      <div class="flex-row">
+        <span style="font-weight:700;color:#d4677a">¥${e.amount.toFixed(2)}</span>
+        <button class="del-btn" onclick="deleteExpense(${e.id})">✕</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('todayExpenses').innerHTML = html;
+}
+
+function renderMonthStats() {
+  const data = loadData('nx_finance', { expenses: [] });
+  const now = new Date();
+  const monthExp = (data.expenses || []).filter(e => {
+    const d = new Date(e.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+
+  if (monthExp.length === 0) {
+    document.getElementById('monthStats').innerHTML = '<div class="empty-state">本月暂无消费记录</div>';
+    return;
+  }
+
+  // Category stats
+  const catStats = {};
+  monthExp.forEach(e => {
+    catStats[e.category] = (catStats[e.category] || 0) + e.amount;
+  });
+  const total = monthExp.reduce((s, e) => s + e.amount, 0);
+
+  const catColors = {
+    '餐饮': 'var(--mint)', '房租': 'var(--pink)', '购物': 'var(--purple-light)',
+    '交通': 'var(--blue)', '娱乐': 'var(--yellow)', '学习': '#C7CEEA', '其他': '#FFD6E0'
+  };
+
+  let html = `<div class="text-sm text-muted mb-12">本月总支出：<b style="color:#d4677a;font-size:18px">¥${total.toFixed(2)}</b></div>`;
+  Object.keys(catStats).sort((a,b) => catStats[b]-catStats[a]).forEach(cat => {
+    const pct = (catStats[cat] / total * 100).toFixed(1);
+    html += `<div class="mb-8">
+      <div class="flex-between text-sm">
+        <span>${cat}</span>
+        <span>¥${catStats[cat].toFixed(2)} (${pct}%)</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${catColors[cat]||'var(--pink)'}"></div></div>
+    </div>`;
+  });
+  document.getElementById('monthStats').innerHTML = html;
+}
+
+function saveFinanceOverview() {
+  const data = loadData('nx_finance', { expenses: [], overview: {} });
+  data.overview = {
+    period: document.getElementById('finPeriod').value,
+    income: document.getElementById('finIncome').value,
+    savings: document.getElementById('finSavings').value,
+    goal: document.getElementById('finGoal').value,
+    split: document.getElementById('finSplit').value,
+    review: document.getElementById('finReview').value,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_finance', data);
+  alert('✅ 财务概况已保存！');
+}
+
+function renderFinanceHistory() {
+  const data = loadData('nx_finance', { expenses: [] });
+  const expenses = data.expenses || [];
+  if (expenses.length === 0) {
+    document.getElementById('financeHistory').innerHTML = '<div class="empty-state">暂无账单记录</div>';
+    return;
+  }
+
+  // Group by date
+  const byDate = {};
+  expenses.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+  const dates = Object.keys(byDate).sort().reverse();
+
+  let html = '';
+  dates.slice(0, 30).forEach(date => {
+    const dayExp = byDate[date];
+    const dayTotal = dayExp.reduce((s, e) => s + e.amount, 0);
+    html += `<div class="content-block">
+      <div class="flex-between">
+        <span class="block-title">${formatDateDisplay(date)}</span>
+        <span style="font-weight:700;color:#d4677a">¥${dayTotal.toFixed(2)}</span>
+      </div>`;
+    dayExp.forEach(e => {
+      html += `<div class="text-sm mt-8">• ${escapeHtml(e.item)} <span class="tag tag-pink">${e.category}</span> ¥${e.amount.toFixed(2)}</div>`;
+    });
+    html += `</div>`;
+  });
+  document.getElementById('financeHistory').innerHTML = html;
+}
+
+// ============================================================
+//  Module 4: Weight
+// ============================================================
+function initWeight() {
+  const today = todayStr();
+  document.getElementById('weightDate').value = today;
+  const data = loadData('nx_weight', {});
+  const rec = data[today] || {};
+  document.getElementById('weightKg').value = rec.weight || '';
+  document.getElementById('weightDiet').value = rec.diet || '';
+  document.getElementById('weightSleep').value = rec.sleep || '';
+  document.getElementById('weightFeeling').value = rec.feeling || '';
+  if (rec.exercise) {
+    const radio = document.querySelector(`input[name="weightExercise"][value="${rec.exercise}"]`);
+    if (radio) radio.checked = true;
+  }
+  renderWeightHistory();
+}
+
+function saveWeight() {
+  const data = loadData('nx_weight', {});
+  const date = document.getElementById('weightDate').value || todayStr();
+  const exerciseRadio = document.querySelector('input[name="weightExercise"]:checked');
+  const sleep = parseFloat(document.getElementById('weightSleep').value);
+
+  if (sleep && (sleep < 0 || sleep > 24)) { alert('睡眠时长请在0-24小时之间'); return; }
+  if (sleep && sleep > 10) { if(!confirm('睡眠超过10小时，确认记录吗？')) return; }
+  if (sleep && sleep < 6 && sleep > 0) { if(!confirm('睡眠不足6小时，确认记录吗？')) return; }
+
+  data[date] = {
+    weight: document.getElementById('weightKg').value,
+    diet: document.getElementById('weightDiet').value,
+    exercise: exerciseRadio ? exerciseRadio.value : '',
+    sleep: document.getElementById('weightSleep').value,
+    feeling: document.getElementById('weightFeeling').value,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_weight', data);
+  alert('✅ 体重记录已保存！');
+  renderWeightHistory();
+}
+
+function renderWeightHistory() {
+  const data = loadData('nx_weight', {});
+  const dates = Object.keys(data).sort().reverse();
+  if (dates.length === 0) {
+    document.getElementById('weightHistory').innerHTML = '<div class="empty-state">暂无记录</div>';
+    return;
+  }
+  let html = '';
+  dates.slice(0, 30).forEach(date => {
+    const r = data[date];
+    if (!r.weight && !r.savedAt) return;
+    const exTag = r.exercise ? `<span class="tag tag-mint">${r.exercise}</span>` : '';
+    html += `<div class="list-item">
+      <div>
+        <div class="text-sm" style="font-weight:600">${formatDateDisplay(date)}</div>
+        <div class="text-sm text-muted">${r.weight ? '⚖️ '+r.weight+'kg' : ''} ${r.sleep ? '😴 '+r.sleep+'h' : ''}</div>
+      </div>
+      <div>${exTag}</div>
+    </div>`;
+  });
+  document.getElementById('weightHistory').innerHTML = html || '<div class="empty-state">暂无记录</div>';
+}
+
+// ============================================================
+//  Module 5: Financial Thinking - Auto-generated materials
+// ============================================================
+const financialThinkingMaterials = [
+  { title: '需要vs想要', keyword: '青少年财商 需要和想要区别', desc: '学会区分生活中真正"需要"的东西和仅仅是"想要"的东西，这是理性消费的第一步。' },
+  { title: '复利的力量', keyword: '复利效应 小额存钱 长期积累', desc: '即使每天只存一小笔钱，长期坚持下来也能积累可观的财富，理解时间和复利的魔力。' },
+  { title: '商业模式入门', keyword: '商业模式四要素 怎么赚钱', desc: '了解一个企业如何创造价值、传递价值并获取利润，学会用商业思维看世界。' },
+  { title: '消费陷阱识别', keyword: '消费主义陷阱 营销手段 冲动消费', desc: '识别商家的营销套路，避免被"打折""限时"等话术诱导冲动消费。' },
+  { title: '储蓄的三个罐子', keyword: '储蓄分配方法 零花钱管理', desc: '把收入分成消费、储蓄、分享三份，培养合理的金钱分配习惯。' },
+  { title: '机会成本思维', keyword: '机会成本 选择代价 经济学思维', desc: '每一次选择都有代价，学会思考"如果我选了A，就放弃了B"，做出更明智的决策。' },
+  { title: '资产与负债', keyword: '资产负债区别 富人思维', desc: '理解什么是把钱放进你口袋的资产，什么是把钱从口袋拿走的负债。' },
+  { title: '延迟满足', keyword: '延迟满足 棉花糖实验 自控力', desc: '学会为了更大的长远利益放弃眼前的小诱惑，这是财商和人生的重要能力。' },
+  { title: '价格与价值', keyword: '价格价值区别 值不值', desc: '价格是你付出的，价值是你得到的。学会判断一件东西真正的价值，而非只看价格标签。' },
+  { title: '预算管理入门', keyword: '个人预算管理 收支规划', desc: '学会做月度收支预算，让每一分钱都有去处，不再月光。' },
+  { title: '理性消费决策', keyword: '理性消费 72小时法则 消费决策', desc: '遇到想买的东西先等72小时，如果还是想买再买，避免冲动消费。' },
+  { title: '收入多元化', keyword: '收入来源 多元化收入 副业思维', desc: '不要只依赖单一收入来源，了解如何通过多种方式创造收入。' }
+];
+
+function initFinancial() {
+  const week = getISOWeek();
+  const weekIdx = (week - 1) % financialThinkingMaterials.length;
+  const materials = [];
+  // Show 3 materials per week
+  for (let i = 0; i < 3; i++) {
+    materials.push(financialThinkingMaterials[(weekIdx + i) % financialThinkingMaterials.length]);
+  }
+
+  let html = '';
+  materials.forEach((m, i) => {
+    html += `<div class="material-card">
+      <div class="mat-title">${i+1}. ${m.title}</div>
+      <div class="mat-keyword">🔍 抖音搜索：${m.keyword}</div>
+      <div class="mat-desc">${m.desc}</div>
+    </div>`;
+  });
+  document.getElementById('financialMaterials').innerHTML = html;
+
+  // Load existing notes
+  const data = loadData('nx_financial_thinking', {});
+  const wk = getWeekKey();
+  const rec = data[wk] || {};
+  document.getElementById('finThinkTopic').value = rec.topic || (materials[0] ? materials[0].title : '');
+  document.getElementById('finThinkLearning').value = rec.learning || '';
+  document.getElementById('finThinkInspiration').value = rec.inspiration || '';
+  document.getElementById('finThinkDone').checked = rec.done || false;
+
+  renderFinancialThinkingHistory();
+}
+
+function saveFinancialThinking() {
+  const data = loadData('nx_financial_thinking', {});
+  const wk = getWeekKey();
+  data[wk] = {
+    topic: document.getElementById('finThinkTopic').value,
+    learning: document.getElementById('finThinkLearning').value,
+    inspiration: document.getElementById('finThinkInspiration').value,
+    done: document.getElementById('finThinkDone').checked,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_financial_thinking', data);
+  alert('✅ 财商笔记已保存！');
+  renderFinancialThinkingHistory();
+}
+
+function renderFinancialThinkingHistory() {
+  const data = loadData('nx_financial_thinking', {});
+  const weeks = Object.keys(data).sort().reverse();
+  if (weeks.length === 0) {
+    document.getElementById('financialThinkingHistory').innerHTML = '<div class="empty-state">暂无历史笔记</div>';
+    return;
+  }
+  let html = '';
+  weeks.slice(0, 10).forEach(wk => {
+    const r = data[wk];
+    if (!r.savedAt) return;
+    const doneTag = r.done ? '<span class="tag tag-mint">✅已完成</span>' : '<span class="tag tag-pink">未完成</span>';
+    html += `<div class="content-block">
+      <div class="flex-between">
+        <span class="block-title">${escapeHtml(r.topic||wk)}</span>
+        ${doneTag}
+      </div>
+      ${r.learning ? `<div class="block-content">💡 ${escapeHtml(r.learning)}</div>` : ''}
+      ${r.inspiration ? `<div class="block-content">🤔 ${escapeHtml(r.inspiration)}</div>` : ''}
+    </div>`;
+  });
+  document.getElementById('financialThinkingHistory').innerHTML = html || '<div class="empty-state">暂无历史笔记</div>';
+}
+
+// ============================================================
+//  Module 6: Current Affairs - Auto-generated materials
+// ============================================================
+const affairsMaterials = [
+  // Today's briefings
+  { type: 'today', title: '科技前沿动态', keyword: '今日科技新闻 AI人工智能', desc: '关注最新科技发展动态，了解人工智能、芯片等领域的突破性进展。', thought: '思考：科技发展如何影响未来就业？' },
+  { type: 'today', title: '经济民生政策', keyword: '今日经济新闻 民生政策', desc: '了解最新经济数据和民生相关政策，关注物价、就业等与生活密切相关的信息。', thought: '思考：政策变化对普通人生活有什么影响？' },
+  { type: 'today', title: '国际关系动态', keyword: '今日国际新闻 外交动态', desc: '关注国际重大事件，了解各国关系变化，培养全球视野。', thought: '思考：国际局势如何影响经济发展？' },
+  { type: 'today', title: '环保与气候', keyword: '环保新闻 气候变化 碳排放', desc: '关注环境保护和气候变化相关新闻，理解可持续发展的重要性。', thought: '思考：个人可以为环保做什么？' },
+  { type: 'today', title: '教育改革动态', keyword: '教育新闻 高考改革 教育政策', desc: '关注教育领域改革和政策变化，了解与学习密切相关的重要信息。', thought: '思考：教育改革如何影响个人发展？' },
+  // Weekly highlights
+  { type: 'week', title: '本周经济数据解读', keyword: '本周经济数据 GDP CPI', desc: '汇总本周发布的重要经济数据，分析经济走势。', thought: '思考：经济数据背后的深层含义是什么？' },
+  { type: 'week', title: '本周社会热点', keyword: '本周社会热点新闻', desc: '梳理本周引发广泛关注的社会事件，多角度分析。', thought: '思考：热点事件反映了什么社会问题？' },
+  { type: 'week', title: '本周科技突破', keyword: '本周科技突破 创新', desc: '盘点本周科技领域的重大突破和创新成果。', thought: '思考：科技突破将如何改变生活？' },
+  // Monthly review
+  { type: 'month', title: '本月大事件复盘', keyword: '本月重大新闻 月度回顾', desc: '回顾本月最具影响力的重大事件，梳理来龙去脉。', thought: '思考：这些事件之间有什么关联？' },
+  { type: 'month', title: '本月国际局势', keyword: '本月国际局势回顾', desc: '复盘本月国际关系重大变化，理解全球格局演变。', thought: '思考：国际变化对中国的机遇和挑战？' },
+  { type: 'month', title: '本月经济趋势', keyword: '本月经济趋势分析', desc: '分析本月经济走势，理解宏观经济运行规律。', thought: '思考：经济趋势对个人理财有什么启示？' }
+];
+
+function initAffairs() {
+  const week = getISOWeek();
+  const weekIdx = (week - 1) % 5;
+
+  const todayItems = affairsMaterials.filter(m => m.type === 'today');
+  const weekItems = affairsMaterials.filter(m => m.type === 'week');
+  const monthItems = affairsMaterials.filter(m => m.type === 'month');
+
+  // Rotate selection based on week
+  const todayPicks = [
+    [todayItems[0], todayItems[1], todayItems[2]],
+    [todayItems[1], todayItems[2], todayItems[3]],
+    [todayItems[2], todayItems[3], todayItems[4]],
+    [todayItems[3], todayItems[4], todayItems[0]],
+    [todayItems[4], todayItems[0], todayItems[1]]
+  ];
+
+  let html = '';
+
+  // Today's briefings
+  html += '<h3 class="mt-12">📰 今日简讯</h3>';
+  todayPicks[weekIdx].forEach((m, i) => {
+    html += `<div class="material-card">
+      <div class="mat-title">${i+1}. ${m.title}</div>
+      <div class="mat-keyword">🔍 搜索：${m.keyword}</div>
+      <div class="mat-desc">${m.desc}</div>
+      <div class="mat-desc" style="color:#7a5a9b;margin-top:6px">${m.thought}</div>
+    </div>`;
+  });
+
+  // Weekly highlights
+  html += '<h3 class="mt-16">📊 本周重点汇总</h3>';
+  [weekItems[weekIdx % weekItems.length], weekItems[(weekIdx+1) % weekItems.length]].forEach((m, i) => {
+    html += `<div class="material-card" style="background:linear-gradient(135deg,var(--mint),var(--blue-light))">
+      <div class="mat-title">${i+1}. ${m.title}</div>
+      <div class="mat-keyword">🔍 搜索：${m.keyword}</div>
+      <div class="mat-desc">${m.desc}</div>
+      <div class="mat-desc" style="color:#5a7a9b;margin-top:6px">${m.thought}</div>
+    </div>`;
+  });
+
+  // Monthly review
+  html += '<h3 class="mt-16">📅 本月大事件复盘</h3>';
+  [monthItems[weekIdx % monthItems.length]].forEach((m, i) => {
+    html += `<div class="material-card" style="background:linear-gradient(135deg,var(--yellow),var(--pink-light))">
+      <div class="mat-title">${i+1}. ${m.title}</div>
+      <div class="mat-keyword">🔍 搜索：${m.keyword}</div>
+      <div class="mat-desc">${m.desc}</div>
+      <div class="mat-desc" style="color:#9b8a4a;margin-top:6px">${m.thought}</div>
+    </div>`;
+  });
+
+  document.getElementById('affairsMaterials').innerHTML = html;
+
+  // Load notes
+  const data = loadData('nx_current_affairs', {});
+  const wk = getWeekKey();
+  const rec = data[wk] || {};
+  document.getElementById('affairsEvent').value = rec.event || '';
+  document.getElementById('affairsProcess').value = rec.process || '';
+  document.getElementById('affairsLogic').value = rec.logic || '';
+  document.getElementById('affairsThought').value = rec.thought || '';
+  document.getElementById('affairsDone').checked = rec.done || false;
+
+  renderAffairsHistory();
+}
+
+function saveAffairs() {
+  const data = loadData('nx_current_affairs', {});
+  const wk = getWeekKey();
+  data[wk] = {
+    event: document.getElementById('affairsEvent').value,
+    process: document.getElementById('affairsProcess').value,
+    logic: document.getElementById('affairsLogic').value,
+    thought: document.getElementById('affairsThought').value,
+    done: document.getElementById('affairsDone').checked,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_current_affairs', data);
+  alert('✅ 时政笔记已保存！');
+  renderAffairsHistory();
+}
+
+function renderAffairsHistory() {
+  const data = loadData('nx_current_affairs', {});
+  const weeks = Object.keys(data).sort().reverse();
+  if (weeks.length === 0) {
+    document.getElementById('affairsHistory').innerHTML = '<div class="empty-state">暂无历史笔记</div>';
+    return;
+  }
+  let html = '';
+  weeks.slice(0, 10).forEach(wk => {
+    const r = data[wk];
+    if (!r.savedAt) return;
+    const doneTag = r.done ? '<span class="tag tag-mint">✅已完成</span>' : '<span class="tag tag-pink">未完成</span>';
+    html += `<div class="content-block">
+      <div class="flex-between">
+        <span class="block-title">${escapeHtml(r.event||wk)}</span>
+        ${doneTag}
+      </div>
+      ${r.process ? `<div class="block-content">📍 ${escapeHtml(r.process)}</div>` : ''}
+      ${r.logic ? `<div class="block-content">🔎 ${escapeHtml(r.logic)}</div>` : ''}
+      ${r.thought ? `<div class="block-content">✨ ${escapeHtml(r.thought)}</div>` : ''}
+    </div>`;
+  });
+  document.getElementById('affairsHistory').innerHTML = html || '<div class="empty-state">暂无历史笔记</div>';
+}
+
+// ============================================================
+//  Module 7: EQ Thinking - Auto-generated materials
+// ============================================================
+const eqMaterials = [
+  { title: '高情商沟通术', keyword: '高情商沟通 表达技巧', desc: '学习如何在日常交流中用恰当的方式表达自己的想法，同时照顾他人感受。' },
+  { title: '人性的弱点精读', keyword: '人性的弱点 卡耐基 人际关系', desc: '重温经典，学会真诚地关心他人，赢得好人缘的底层逻辑。' },
+  { title: '情绪管理入门', keyword: '情绪管理 控制情绪 方法', desc: '认识自己的情绪，学会在压力下保持冷静，不被情绪左右。' },
+  { title: '社交中的边界感', keyword: '社交边界感 人际距离', desc: '理解人与人之间需要适当的距离感，学会建立和维护自己的边界。' },
+  { title: '换位思考的力量', keyword: '换位思考 同理心 共情能力', desc: '学会站在他人的角度思考问题，理解对方的感受和需求。' },
+  { title: '职场人际关系', keyword: '职场人际关系 同事相处', desc: '了解职场中的人际规则，学会与不同性格的人合作共事。' },
+  { title: '拒绝的艺术', keyword: '如何拒绝别人 说不的技巧', desc: '学会温和而坚定地拒绝不合理的要求，保护自己的时间和精力。' },
+  { title: '赞美与鼓励', keyword: '赞美的技巧 真诚鼓励', desc: '学会发现他人的优点并真诚地表达赞美，让周围的人感到温暖。' },
+  { title: '冲突解决思维', keyword: '冲突解决 化解矛盾', desc: '面对人际冲突时如何冷静分析，找到双方都能接受的解决方案。' },
+  { title: '成长型思维', keyword: '成长型思维 卡罗尔德韦克', desc: '理解固定型思维和成长型思维的区别，学会用成长的眼光看待挑战。' },
+  { title: '人情世故入门', keyword: '人情世故 社交规则 中国式社交', desc: '了解中国社会中基本的人情往来规则，学会得体地处理人际关系。' },
+  { title: '自洽与自我接纳', keyword: '自我接纳 自洽 心理成长', desc: '学会接受不完美的自己，在自我成长和自我接纳之间找到平衡。' },
+  { title: '影响力的本质', keyword: '影响力 说服心理学', desc: '理解影响力的六大原则，学会用正当方式影响他人。' },
+  { title: '深度倾听', keyword: '深度倾听 积极倾听技巧', desc: '学会真正听懂别人在说什么，而不是急于表达自己的观点。' }
+];
+
+function initEq() {
+  const week = getISOWeek();
+  const weekIdx = (week - 1) % eqMaterials.length;
+  const materials = [];
+  for (let i = 0; i < 4; i++) {
+    materials.push(eqMaterials[(weekIdx + i) % eqMaterials.length]);
+  }
+
+  let html = '';
+  materials.forEach((m, i) => {
+    html += `<div class="material-card" style="background:linear-gradient(135deg,var(--blue),var(--mint))">
+      <div class="mat-title">${i+1}. ${m.title}</div>
+      <div class="mat-keyword">🔍 抖音搜索：${m.keyword}</div>
+      <div class="mat-desc">${m.desc}</div>
+    </div>`;
+  });
+  document.getElementById('eqMaterials').innerHTML = html;
+
+  // Load notes
+  const data = loadData('nx_eq_thinking', {});
+  const wk = getWeekKey();
+  const rec = data[wk] || {};
+  document.getElementById('eqTopic').value = rec.topic || (materials[0] ? materials[0].title : '');
+  document.getElementById('eqKeyPoints').value = rec.keyPoints || '';
+  document.getElementById('eqInsight').value = rec.insight || '';
+  document.getElementById('eqAction').value = rec.action || '';
+  document.getElementById('eqDone').checked = rec.done || false;
+
+  renderEqHistory();
+}
+
+function saveEq() {
+  const data = loadData('nx_eq_thinking', {});
+  const wk = getWeekKey();
+  data[wk] = {
+    topic: document.getElementById('eqTopic').value,
+    keyPoints: document.getElementById('eqKeyPoints').value,
+    insight: document.getElementById('eqInsight').value,
+    action: document.getElementById('eqAction').value,
+    done: document.getElementById('eqDone').checked,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_eq_thinking', data);
+  alert('✅ 情商思维笔记已保存！');
+  renderEqHistory();
+}
+
+function renderEqHistory() {
+  const data = loadData('nx_eq_thinking', {});
+  const weeks = Object.keys(data).sort().reverse();
+  if (weeks.length === 0) {
+    document.getElementById('eqHistory').innerHTML = '<div class="empty-state">暂无历史笔记</div>';
+    return;
+  }
+  let html = '';
+  weeks.slice(0, 10).forEach(wk => {
+    const r = data[wk];
+    if (!r.savedAt) return;
+    const doneTag = r.done ? '<span class="tag tag-mint">✅已完成</span>' : '<span class="tag tag-pink">未完成</span>';
+    html += `<div class="content-block">
+      <div class="flex-between">
+        <span class="block-title">${escapeHtml(r.topic||wk)}</span>
+        ${doneTag}
+      </div>
+      ${r.keyPoints ? `<div class="block-content">💡 ${escapeHtml(r.keyPoints)}</div>` : ''}
+      ${r.insight ? `<div class="block-content">🤝 ${escapeHtml(r.insight)}</div>` : ''}
+      ${r.action ? `<div class="block-content">✨ ${escapeHtml(r.action)}</div>` : ''}
+    </div>`;
+  });
+  document.getElementById('eqHistory').innerHTML = html || '<div class="empty-state">暂无历史笔记</div>';
+}
+
+// ============================================================
+//  Module 8: English - Words, Grammar, IELTS
+// ============================================================
+
+// --- Word Bank (100+ core words) ---
+const wordBank = [
+  { w:'abandon', p:'/əˈbændən/', m:'v.放弃,抛弃', e:'He abandoned his old car.' },
+  { w:'ability', p:'/əˈbɪləti/', m:'n.能力,才能', e:'She has the ability to learn fast.' },
+  { w:'absolute', p:'/ˈæbsəluːt/', m:'adj.绝对的,完全的', e:'I have absolute confidence in you.' },
+  { w:'academic', p:'/ˌækəˈdemɪk/', m:'adj.学术的', e:'His academic performance is excellent.' },
+  { w:'accept', p:'/əkˈsept/', m:'v.接受', e:'Please accept my apology.' },
+  { w:'access', p:'/ˈækses/', m:'n.入口,接近', e:'Students have access to the library.' },
+  { w:'accident', p:'/ˈæksɪdənt/', m:'n.事故,意外', e:'The accident happened at midnight.' },
+  { w:'account', p:'/əˈkaʊnt/', m:'n.账户,描述', e:'I opened a bank account yesterday.' },
+  { w:'accurate', p:'/ˈækjərət/', m:'adj.准确的', e:'The clock gives accurate time.' },
+  { w:'achieve', p:'/əˈtʃiːv/', m:'v.实现,达到', e:'You can achieve your dream.' },
+  { w:'actual', p:'/ˈæktʃuəl/', m:'adj.实际的', e:'The actual cost was higher.' },
+  { w:'adapt', p:'/əˈdæpt/', m:'v.适应,改编', e:'She adapted to the new environment.' },
+  { w:'address', p:'/əˈdres/', m:'n.地址 v.解决', e:'What is your home address?' },
+  { w:'adequate', p:'/ˈædɪkwət/', m:'adj.足够的', e:'We need adequate food and water.' },
+  { w:'adjust', p:'/əˈdʒʌst/', m:'v.调整', e:'Please adjust the volume.' },
+  { w:'admire', p:'/ədˈmaɪər/', m:'v.钦佩,欣赏', e:'I admire your courage.' },
+  { w:'admit', p:'/ədˈmɪt/', m:'v.承认', e:'He admitted his mistake.' },
+  { w:'adopt', p:'/əˈdɒpt/', m:'v.采纳,收养', e:'They adopted a new method.' },
+  { w:'advance', p:'/ədˈvɑːns/', m:'n.进步 v.前进', e:'Technology advances rapidly.' },
+  { w:'advantage', p:'/ədˈvɑːntɪdʒ/', m:'n.优势', e:'Speaking English is a great advantage.' },
+  { w:'adventure', p:'/ədˈventʃər/', m:'n.冒险', e:'Life is an adventure.' },
+  { w:'advertise', p:'/ˈædvətaɪz/', m:'v.做广告', e:'They advertise on TV.' },
+  { w:'advice', p:'/ədˈvaɪs/', m:'n.建议', e:'Can you give me some advice?' },
+  { w:'affect', p:'/əˈfekt/', m:'v.影响', e:'The weather affects my mood.' },
+  { w:'afford', p:'/əˈfɔːd/', m:'v.负担得起', e:'I cannot afford a new car.' },
+  { w:'agency', p:'/ˈeɪdʒənsi/', m:'n.代理处,机构', e:'She works at a travel agency.' },
+  { w:'agenda', p:'/əˈdʒendə/', m:'n.议程', e:'What is on the agenda today?' },
+  { w:'agriculture', p:'/ˈæɡrɪkʌltʃər/', m:'n.农业', e:'Agriculture is the backbone of the country.' },
+  { w:'ahead', p:'/əˈhed/', m:'adv.向前,提前', e:'Go straight ahead.' },
+  { w:'aim', p:'/eɪm/', m:'n.目标 v.瞄准', e:'My aim is to be a doctor.' },
+  { w:'ancient', p:'/ˈeɪnʃənt/', m:'adj.古代的', e:'We study ancient history.' },
+  { w:'announce', p:'/əˈnaʊns/', m:'v.宣布', e:'They announced the results.' },
+  { w:'annual', p:'/ˈænjuəl/', m:'adj.年度的', e:'The annual meeting is in June.' },
+  { w:'anxious', p:'/ˈæŋkʃəs/', m:'adj.焦虑的', e:'She felt anxious about the exam.' },
+  { w:'approach', p:'/əˈprəʊtʃ/', m:'v.接近 n.方法', e:'A new approach to learning.' },
+  { w:'appropriate', p:'/əˈprəʊpriət/', m:'adj.合适的', e:'Wear appropriate clothes.' },
+  { w:'approve', p:'/əˈpruːv/', m:'v.批准,赞成', e:'My parents approved my plan.' },
+  { w:'arrange', p:'/əˈreɪndʒ/', m:'v.安排', e:'I will arrange a meeting.' },
+  { w:'aspect', p:'/ˈæspekt/', m:'n.方面', e:'We considered every aspect.' },
+  { w:'assess', p:'/əˈses/', m:'v.评估', e:'We need to assess the situation.' },
+  { w:'assign', p:'/əˈsaɪn/', m:'v.分配', e:'The teacher assigned homework.' },
+  { w:'assist', p:'/əˈsɪst/', m:'v.协助', e:'Can you assist me with this?' },
+  { w:'assume', p:'/əˈsjuːm/', m:'v.假设', e:'I assume you are right.' },
+  { w:'attach', p:'/əˈtætʃ/', m:'v.附加', e:'Please attach the file.' },
+  { w:'attain', p:'/əˈteɪn/', m:'v.获得', e:'He attained his goal.' },
+  { w:'attempt', p:'/əˈtempt/', m:'n./v.尝试', e:'She made an attempt to climb.' },
+  { w:'attitude', p:'/ˈætɪtjuːd/', m:'n.态度', e:'His attitude is positive.' },
+  { w:'attract', p:'/əˈtrækt/', m:'v.吸引', e:'The show attracts many people.' },
+  { w:'available', p:'/əˈveɪləbl/', m:'adj.可用的', e:'Is this seat available?' },
+  { w:'average', p:'/ˈævərɪdʒ/', m:'n.平均 adj.一般的', e:'The average score is 80.' },
+  { w:'aware', p:'/əˈweər/', m:'adj.意识到的', e:'Are you aware of the risk?' },
+  { w:'balance', p:'/ˈbæləns/', m:'n.平衡', e:'Keep a balance between work and rest.' },
+  { w:'benefit', p:'/ˈbenɪfɪt/', m:'n.利益 v.受益', e:'Exercise benefits your health.' },
+  { w:'besides', p:'/bɪˈsaɪdz/', m:'adv.此外', e:'Besides, it is too late.' },
+  { w:'border', p:'/ˈbɔːdər/', m:'n.边界', e:'We crossed the border.' },
+  { w:'brief', p:'/briːf/', m:'adj.简短的', e:'A brief introduction.' },
+  { w:'budget', p:'/ˈbʌdʒɪt/', m:'n.预算', e:'We need to stick to our budget.' },
+  { w:'burden', p:'/ˈbɜːdn/', m:'n.负担', e:'It is a heavy burden.' },
+  { w:'campaign', p:'/kæmˈpeɪn/', m:'n.运动,战役', e:'The campaign was successful.' },
+  { w:'capacity', p:'/kəˈpæsəti/', m:'n.容量,能力', e:'The hall has a capacity of 500.' },
+  { w:'category', p:'/ˈkætəɡəri/', m:'n.类别', e:'Books are divided into categories.' },
+  { w:'challenge', p:'/ˈtʃælɪndʒ/', m:'n./v.挑战', e:'Life is full of challenges.' },
+  { w:'character', p:'/ˈkærəktər/', m:'n.性格,角色', e:'He has a strong character.' },
+  { w:'circumstance', p:'/ˈsɜːkəmstəns/', m:'n.情况', e:'Under no circumstances give up.' },
+  { w:'communicate', p:'/kəˈmjuːnɪkeɪt/', m:'v.交流', e:'We communicate by email.' },
+  { w:'compare', p:'/kəmˈpeər/', m:'v.比较', e:'Compare the two pictures.' },
+  { w:'compete', p:'/kəmˈpiːt/', m:'v.竞争', e:'They compete for the prize.' },
+  { w:'complain', p:'/kəmˈpleɪn/', m:'v.抱怨', e:'Do not complain about everything.' },
+  { w:'complex', p:'/ˈkɒmpleks/', m:'adj.复杂的', e:'This is a complex problem.' },
+  { w:'concept', p:'/ˈkɒnsept/', m:'n.概念', e:'The concept is hard to understand.' },
+  { w:'concern', p:'/kənˈsɜːn/', m:'v.关心 n.担忧', e:'I am concerned about you.' },
+  { w:'conclude', p:'/kənˈkluːd/', m:'v.总结,得出结论', e:'We concluded the meeting.' },
+  { w:'condition', p:'/kənˈdɪʃn/', m:'n.条件', e:'In good condition.' },
+  { w:'confidence', p:'/ˈkɒnfɪdəns/', m:'n.信心', e:'She has confidence in herself.' },
+  { w:'confirm', p:'/kənˈfɜːm/', m:'v.确认', e:'Please confirm your booking.' },
+  { w:'conflict', p:'/ˈkɒnflɪkt/', m:'n.冲突', e:'Avoid conflict with others.' },
+  { w:'consider', p:'/kənˈsɪdər/', m:'v.考虑', e:'Consider all options.' },
+  { w:'constant', p:'/ˈkɒnstənt/', m:'adj.不断的', e:'Constant effort leads to success.' },
+  { w:'construct', p:'/kənˈstrʌkt/', m:'v.建造', e:'They constructed a bridge.' },
+  { w:'consume', p:'/kənˈsjuːm/', m:'v.消耗', e:'We consume too much sugar.' },
+  { w:'contain', p:'/kənˈteɪn/', m:'v.包含', e:'The box contains books.' },
+  { w:'context', p:'/ˈkɒntekst/', m:'n.上下文,背景', e:'Understand it in context.' },
+  { w:'contribute', p:'/kənˈtrɪbjuːt/', m:'v.贡献', e:'Everyone contributes to society.' },
+  { w:'convince', p:'/kənˈvɪns/', m:'v.说服', e:'I convinced him to try.' },
+  { w:'creative', p:'/kriˈeɪtɪv/', m:'adj.有创造力的', e:'She is a creative artist.' },
+  { w:'crisis', p:'/ˈkraɪsɪs/', m:'n.危机', e:'The economic crisis was serious.' },
+  { w:'critical', p:'/ˈkrɪtɪkl/', m:'adj.关键的,批评的', e:'It is a critical moment.' },
+  { w:'culture', p:'/ˈkʌltʃər/', m:'n.文化', e:'Chinese culture is rich.' },
+  { w:'curious', p:'/ˈkjʊəriəs/', m:'adj.好奇的', e:'Children are curious about everything.' },
+  { w:'current', p:'/ˈkʌrənt/', m:'adj.当前的', e:'The current situation is stable.' },
+  { w:'debate', p:'/dɪˈbeɪt/', m:'n./v.辩论', e:'They had a heated debate.' },
+  { w:'declare', p:'/dɪˈkleər/', m:'v.宣布', e:'He declared his love.' },
+  { w:'decrease', p:'/dɪˈkriːs/', m:'v.减少', e:'The price decreased.' },
+  { w:'define', p:'/dɪˈfaɪn/', m:'v.定义', e:'How do you define success?' },
+  { w:'demand', p:'/dɪˈmɑːnd/', m:'n./v.需求', e:'There is a high demand.' },
+  { w:'depend', p:'/dɪˈpend/', m:'v.依赖', e:'It depends on you.' },
+  { w:'describe', p:'/dɪˈskraɪb/', m:'v.描述', e:'Describe what you saw.' },
+  { w:'design', p:'/dɪˈzaɪn/', m:'n./v.设计', e:'The design is beautiful.' },
+  { w:'desire', p:'/dɪˈzaɪər/', m:'n./v.渴望', e:'I have a strong desire to learn.' },
+  { w:'destroy', p:'/dɪˈstrɔɪ/', m:'v.破坏', e:'The fire destroyed the house.' },
+  { w:'determine', p:'/dɪˈtɜːmɪn/', m:'v.决定', e:'Hard work determines success.' },
+  { w:'develop', p:'/dɪˈveləp/', m:'v.发展', e:'We develop new skills.' },
+  { w:'device', p:'/dɪˈvaɪs/', m:'n.设备', e:'This is a useful device.' },
+  { w:'devote', p:'/dɪˈvəʊt/', m:'v.奉献', e:'She devotes herself to teaching.' },
+  { w:'dignity', p:'/ˈdɪɡnəti/', m:'n.尊严', e:'Everyone deserves dignity.' },
+  { w:'discipline', p:'/ˈdɪsəplɪn/', m:'n.纪律', e:'Self-discipline is important.' },
+  { w:'discover', p:'/dɪˈskʌvər/', m:'v.发现', e:'I discovered a new path.' },
+  { w:'discuss', p:'/dɪˈskʌs/', m:'v.讨论', e:'Let us discuss the plan.' },
+  { w:'display', p:'/dɪˈspleɪ/', m:'v.展示', e:'The results are displayed.' },
+  { w:'distinguish', p:'/dɪˈstɪŋɡwɪʃ/', m:'v.区分', e:'Can you distinguish them?' },
+  { w:'doubt', p:'/daʊt/', m:'n./v.怀疑', e:'I have no doubt about it.' },
+  { w:'economy', p:'/ɪˈkɒnəmi/', m:'n.经济', e:'The economy is growing.' },
+  { w:'efficient', p:'/ɪˈfɪʃnt/', m:'adj.高效的', e:'She is an efficient worker.' },
+  { w:'effort', p:'/ˈefət/', m:'n.努力', e:'Make an effort to improve.' },
+  { w:'element', p:'/ˈelɪmənt/', m:'n.元素', e:'Trust is a key element.' },
+  { w:'emergency', p:'/iˈmɜːdʒənsi/', m:'n.紧急情况', e:'Call 120 in an emergency.' },
+  { w:'emotion', p:'/ɪˈməʊʃn/', m:'n.情感', e:'Music expresses emotion.' },
+  { w:'emphasis', p:'/ˈemfəsɪs/', m:'n.强调', e:'Put emphasis on quality.' },
+  { w:'encourage', p:'/ɪnˈkʌrɪdʒ/', m:'v.鼓励', e:'My parents encourage me.' },
+  { w:'energy', p:'/ˈenədʒi/', m:'n.精力,能源', e:'I have a lot of energy.' },
+  { w:'enhance', p:'/ɪnˈhɑːns/', m:'v.增强', e:'Exercise enhances health.' },
+  { w:'ensure', p:'/ɪnˈʃʊər/', m:'v.确保', e:'Ensure the door is locked.' },
+  { w:'entire', p:'/ɪnˈtaɪər/', m:'adj.整个的', e:'The entire class was happy.' },
+  { w:'environment', p:'/ɪnˈvaɪrənmənt/', m:'n.环境', e:'Protect the environment.' },
+  { w:'establish', p:'/ɪˈstæblɪʃ/', m:'v.建立', e:'They established a school.' },
+  { w:'estimate', p:'/ˈestɪmeɪt/', m:'v.估计', e:'I estimate it will take an hour.' },
+  { w:'evaluate', p:'/ɪˈvæljueɪt/', m:'v.评价', e:'We evaluate the results.' },
+  { w:'evidence', p:'/ˈevɪdəns/', m:'n.证据', e:'There is no evidence.' },
+  { w:'examine', p:'/ɪɡˈzæmɪn/', m:'v.检查', e:'The doctor examined me.' },
+  { w:'exceed', p:'/ɪkˈsiːd/', m:'v.超过', e:'Do not exceed the speed limit.' },
+  { w:'exchange', p:'/ɪksˈtʃeɪndʒ/', m:'v.交换', e:'We exchanged gifts.' },
+  { w:'exist', p:'/ɪɡˈzɪst/', m:'v.存在', e:'Do ghosts really exist?' },
+  { w:'expand', p:'/ɪkˈspænd/', m:'v.扩展', e:'The city is expanding.' },
+  { w:'expect', p:'/ɪkˈspekt/', m:'v.期望', e:'I expect you to be on time.' },
+  { w:'experience', p:'/ɪkˈspɪəriəns/', m:'n.经验 v.经历', e:'It was a great experience.' },
+  { w:'experiment', p:'/ɪkˈsperɪmənt/', m:'n.实验', e:'We did an experiment in class.' },
+  { w:'explain', p:'/ɪkˈspleɪn/', m:'v.解释', e:'Can you explain this?' },
+  { w:'explore', p:'/ɪkˈsplɔːr/', m:'v.探索', e:'We explored the cave.' },
+  { w:'express', p:'/ɪkˈspres/', m:'v.表达', e:'Express your feelings.' },
+  { w:'extend', p:'/ɪkˈstend/', m:'v.延伸', e:'They extended the deadline.' },
+  { w:'extreme', p:'/ɪkˈstriːm/', m:'adj.极端的', e:'Extreme weather is dangerous.' },
+  { w:'factor', p:'/ˈfæktər/', m:'n.因素', e:'Money is a key factor.' },
+  { w:'familiar', p:'/fəˈmɪliər/', m:'adj.熟悉的', e:'This place looks familiar.' },
+  { w:'famous', p:'/ˈfeɪməs/', m:'adj.著名的', e:'He is a famous singer.' },
+  { w:'favor', p:'/ˈfeɪvər/', m:'n.帮助 v.赞成', e:'Can you do me a favor?' },
+  { w:'feature', p:'/ˈfiːtʃər/', m:'n.特征', e:'What are its main features?' },
+  { w:'figure', p:'/ˈfɪɡər/', m:'n.数字 v.理解', e:'I cannot figure it out.' },
+  { w:'finance', p:'/ˈfaɪnæns/', m:'n.金融', e:'She studies finance.' },
+  { w:'flexible', p:'/ˈfleksəbl/', m:'adj.灵活的', e:'Be flexible with your plans.' },
+  { w:'focus', p:'/ˈfəʊkəs/', m:'n.焦点 v.集中', e:'Focus on your studies.' },
+  { w:'forecast', p:'/ˈfɔːkɑːst/', m:'v./n.预测', e:'The weather forecast says rain.' },
+  { w:'former', p:'/ˈfɔːmər/', m:'adj.前任的', e:'My former classmate.' },
+  { w:'fortune', p:'/ˈfɔːtʃuːn/', m:'n.财富', e:'He made a fortune.' },
+  { w:'frequent', p:'/ˈfriːkwənt/', m:'adj.频繁的', e:'She is a frequent visitor.' },
+  { w:'function', p:'/ˈfʌŋkʃn/', m:'n.功能', e:'What is the function of this?' },
+  { w:'fundamental', p:'/ˌfʌndəˈmentl/', m:'adj.基本的', e:'It is a fundamental right.' },
+  { w:'generate', p:'/ˈdʒenəreɪt/', m:'v.产生', e:'Solar panels generate energy.' },
+  { w:'genuine', p:'/ˈdʒenjuɪn/', m:'adj.真诚的', e:'He showed genuine concern.' },
+  { w:'gradual', p:'/ˈɡrædʒuəl/', m:'adj.逐渐的', e:'There was a gradual change.' },
+  { w:'guarantee', p:'/ˌɡærənˈtiː/', m:'n./v.保证', e:'I guarantee you will love it.' },
+  { w:'handle', p:'/ˈhændl/', m:'v.处理', e:'She can handle any problem.' },
+  { w:'highlight', p:'/ˈhaɪlaɪt/', m:'v.强调 n.亮点', e:'Let me highlight the key points.' },
+  { w:'identify', p:'/aɪˈdentɪfaɪ/', m:'v.识别', e:'Can you identify the plant?' },
+  { w:'imagine', p:'/ɪˈmædʒɪn/', m:'v.想象', e:'Imagine a better world.' },
+  { w:'impact', p:'/ˈɪmpækt/', m:'n.影响', e:'It had a huge impact.' },
+  { w:'improve', p:'/ɪmˈpruːv/', m:'v.改善', e:'I want to improve my English.' },
+  { w:'include', p:'/ɪnˈkluːd/', m:'v.包含', e:'The price includes breakfast.' },
+  { w:'increase', p:'/ɪnˈkriːs/', m:'v.增加', e:'Prices are increasing.' },
+  { w:'indicate', p:'/ˈɪndɪkeɪt/', m:'v.表明', e:'The data indicates growth.' },
+  { w:'influence', p:'/ˈɪnfluəns/', m:'n./v.影响', e:'Parents influence children.' },
+  { w:'inform', p:'/ɪnˈfɔːm/', m:'v.通知', e:'Please inform me later.' },
+  { w:'initial', p:'/ɪˈnɪʃl/', m:'adj.最初的', e:'My initial reaction was surprise.' },
+  { w:'injury', p:'/ˈɪndʒəri/', m:'n.伤害', e:'He recovered from his injury.' },
+  { w:'instance', p:'/ˈɪnstəns/', m:'n.例子', e:'For instance, take this case.' },
+  { w:'intelligent', p:'/ɪnˈtelɪdʒənt/', m:'adj.聪明的', e:'She is very intelligent.' },
+  { w:'intend', p:'/ɪnˈtend/', m:'v.打算', e:'I intend to study abroad.' },
+  { w:'involve', p:'/ɪnˈvɒlv/', m:'v.涉及', e:'The job involves travel.' },
+  { w:'journal', p:'/ˈdʒɜːnl/', m:'n.日记,期刊', e:'She writes in her journal daily.' },
+  { w:'journey', p:'/ˈdʒɜːni/', m:'n.旅程', e:'Life is a journey.' },
+  { w:'justice', p:'/ˈdʒʌstɪs/', m:'n.正义', e:'Everyone deserves justice.' },
+  { w:'knowledge', p:'/ˈnɒlɪdʒ/', m:'n.知识', e:'Knowledge is power.' },
+  { w:'landscape', p:'/ˈlændskeɪp/', m:'n.风景', e:'The landscape is beautiful.' },
+  { w:'launch', p:'/lɔːntʃ/', m:'v.发射,启动', e:'They launched a new product.' },
+  { w:'maintain', p:'/meɪnˈteɪn/', m:'v.维持', e:'Maintain a healthy lifestyle.' },
+  { w:'manage', p:'/ˈmænɪdʒ/', m:'v.管理', e:'She manages the team well.' },
+  { w:'matter', p:'/ˈmætər/', m:'n.事情 v.要紧', e:'It does not matter.' },
+  { w:'mention', p:'/ˈmenʃn/', m:'v.提及', e:'Do not mention it.' },
+  { w:'method', p:'/ˈmeθəd/', m:'n.方法', e:'This is a good method.' },
+  { w:'modern', p:'/ˈmɒdn/', m:'adj.现代的', e:'Modern technology is amazing.' },
+  { w:'motion', p:'/ˈməʊʃn/', m:'n.运动', e:'The object is in motion.' },
+  { w:'negotiate', p:'/nɪˈɡəʊʃieɪt/', m:'v.谈判', e:'They negotiated a deal.' },
+  { w:'normal', p:'/ˈnɔːml/', m:'adj.正常的', e:'It is normal to feel nervous.' },
+  { w:'obtain', p:'/əbˈteɪn/', m:'v.获得', e:'He obtained a degree.' },
+  { w:'obvious', p:'/ˈɒbviəs/', m:'adj.明显的', e:'The answer is obvious.' },
+  { w:'occupy', p:'/ˈɒkjupaɪ/', m:'v.占据', e:'Reading occupies my free time.' },
+  { w:'operate', p:'/ˈɒpəreɪt/', m:'v.操作,运营', e:'He operates the machine.' },
+  { w:'opinion', p:'/əˈpɪnjən/', m:'n.观点', e:'What is your opinion?' },
+  { w:'opportunity', p:'/ˌɒpəˈtjuːnəti/', m:'n.机会', e:'Do not miss the opportunity.' },
+  { w:'organize', p:'/ˈɔːɡənaɪz/', m:'v.组织', e:'Let us organize a party.' },
+  { w:'origin', p:'/ˈɒrɪdʒɪn/', m:'n.起源', e:'What is the origin of this word?' },
+  { w:'outcome', p:'/ˈaʊtkʌm/', m:'n.结果', e:'The outcome was positive.' },
+  { w:'overcome', p:'/ˌəʊvəˈkʌm/', m:'v.克服', e:'Overcome your fears.' },
+  { w:'participate', p:'/pɑːˈtɪsɪpeɪt/', m:'v.参加', e:'Everyone should participate.' },
+  { w:'particular', p:'/pəˈtɪkjələr/', m:'adj.特定的', e:'Is there a particular reason?' },
+  { w:'pattern', p:'/ˈpætn/', m:'n.模式', e:'I see a pattern here.' },
+  { w:'perform', p:'/pəˈfɔːm/', m:'v.表演,执行', e:'She performed well.' },
+  { w:'permanent', p:'/ˈpɜːmənənt/', m:'adj.永久的', e:'This is a permanent change.' },
+  { w:'perspective', p:'/pəˈspektɪv/', m:'n.观点,视角', e:'Try a different perspective.' },
+  { w:'physical', p:'/ˈfɪzɪkl/', m:'adj.身体的', e:'Physical exercise is important.' },
+  { w:'policy', p:'/ˈpɒləsi/', m:'n.政策', e:'The new policy starts today.' },
+  { w:'popular', p:'/ˈpɒpjələr/', m:'adj.受欢迎的', e:'This song is very popular.' },
+  { w:'portion', p:'/ˈpɔːʃn/', m:'n.部分', e:'A large portion of the cake.' },
+  { w:'potential', p:'/pəˈtenʃl/', m:'adj.潜在的 n.潜力', e:'She has great potential.' },
+  { w:'practice', p:'/ˈpræktɪs/', m:'n./v.练习', e:'Practice makes perfect.' },
+  { w:'predict', p:'/prɪˈdɪkt/', m:'v.预测', e:'No one can predict the future.' },
+  { w:'preserve', p:'/prɪˈzɜːv/', m:'v.保护', e:'We must preserve nature.' },
+  { w:'principle', p:'/ˈprɪnsəpl/', m:'n.原则', e:'Stick to your principles.' },
+  { w:'process', p:'/ˈprəʊses/', m:'n.过程', e:'Learning is a slow process.' },
+  { w:'produce', p:'/prəˈdjuːs/', m:'v.生产', e:'They produce cars.' },
+  { w:'progress', p:'/ˈprəʊɡres/', m:'n.进步', e:'You are making progress.' },
+  { w:'project', p:'/ˈprɒdʒekt/', m:'n.项目', e:'We have a new project.' },
+  { w:'promise', p:'/ˈprɒmɪs/', m:'n./v.承诺', e:'I promise to help you.' },
+  { w:'promote', p:'/prəˈməʊt/', m:'v.推广,晋升', e:'They promote healthy eating.' },
+  { w:'propose', p:'/prəˈpəʊz/', m:'v.提议', e:'I propose a new plan.' },
+  { w:'protect', p:'/prəˈtekt/', m:'v.保护', e:'Protect your eyes.' },
+  { w:'provide', p:'/prəˈvaɪd/', m:'v.提供', e:'They provide free meals.' },
+  { w:'publish', p:'/ˈpʌblɪʃ/', m:'v.出版', e:'She published a book.' },
+  { w:'pursue', p:'/pəˈsjuː/', m:'v.追求', e:'Pursue your dreams.' },
+  { w:'quality', p:'/ˈkwɒləti/', m:'n.质量', e:'We focus on quality.' },
+  { w:'realize', p:'/ˈrɪəlaɪz/', m:'v.意识到', e:'I realized my mistake.' },
+  { w:'recognize', p:'/ˈrekəɡnaɪz/', m:'v.认出', e:'I did not recognize you.' },
+  { w:'recommend', p:'/ˌrekəˈmend/', m:'v.推荐', e:'I recommend this book.' },
+  { w:'reflect', p:'/rɪˈflekt/', m:'v.反映', e:'The results reflect your effort.' },
+  { w:'reform', p:'/rɪˈfɔːm/', m:'n./v.改革', e:'Education reform is needed.' },
+  { w:'regard', p:'/rɪˈɡɑːd/', m:'v.认为 n.问候', e:'I regard him as a friend.' },
+  { w:'region', p:'/ˈriːdʒən/', m:'n.地区', e:'This region is famous for tea.' },
+  { w:'register', p:'/ˈredʒɪstər/', m:'v.注册', e:'Please register online.' },
+  { w:'regulate', p:'/ˈreɡjuleɪt/', m:'v.管理,调节', e:'The body regulates its temperature.' },
+  { w:'relate', p:'/rɪˈleɪt/', m:'v.联系', e:'I can relate to that.' },
+  { w:'release', p:'/rɪˈliːs/', m:'v.释放', e:'They released a new song.' },
+  { w:'rely', p:'/rɪˈlaɪ/', m:'v.依赖', e:'You can rely on me.' },
+  { w:'remain', p:'/rɪˈmeɪn/', m:'v.保持', e:'Please remain calm.' },
+  { w:'remarkable', p:'/rɪˈmɑːkəbl/', m:'adj.显著的', e:'She made remarkable progress.' },
+  { w:'remind', p:'/rɪˈmaɪnd/', m:'v.提醒', e:'Remind me to call him.' },
+  { w:'remove', p:'/rɪˈmuːv/', m:'v.移除', e:'Remove your shoes.' },
+  { w:'represent', p:'/ˌreprɪˈzent/', m:'v.代表', e:'He represents our school.' },
+  { w:'require', p:'/rɪˈkwaɪər/', m:'v.需要', e:'This requires patience.' },
+  { w:'research', p:'/rɪˈsɜːtʃ/', m:'n./v.研究', e:'She is doing research.' },
+  { w:'resource', p:'/rɪˈsɔːs/', m:'n.资源', e:'Water is a precious resource.' },
+  { w:'respond', p:'/rɪˈspɒnd/', m:'v.回应', e:'Please respond quickly.' },
+  { w:'restore', p:'/rɪˈstɔːr/', m:'v.恢复', e:'They restored the old building.' },
+  { w:'reveal', p:'/rɪˈviːl/', m:'v.揭示', e:'The study reveals the truth.' },
+  { w:'satisfy', p:'/ˈsætɪsfaɪ/', m:'v.满足', e:'The food did not satisfy me.' },
+  { w:'schedule', p:'/ˈʃedjuːl/', m:'n.时间表', e:'Check the schedule.' },
+  { w:'secure', p:'/sɪˈkjʊər/', m:'adj.安全的', e:'Make sure the door is secure.' },
+  { w:'select', p:'/sɪˈlekt/', m:'v.选择', e:'Please select one.' },
+  { w:'sensitive', p:'/ˈsensətɪv/', m:'adj.敏感的', e:'She is sensitive to light.' },
+  { w:'significant', p:'/sɪɡˈnɪfɪkənt/', m:'adj.重要的', e:'A significant change.' },
+  { w:'similar', p:'/ˈsɪmələr/', m:'adj.相似的', e:'We have similar interests.' },
+  { w:'source', p:'/sɔːs/', m:'n.来源', e:'What is the source of this news?' },
+  { w:'specific', p:'/spəˈsɪfɪk/', m:'adj.具体的', e:'Be more specific.' },
+  { w:'stable', p:'/ˈsteɪbl/', m:'adj.稳定的', e:'The economy is stable.' },
+  { w:'strategy', p:'/ˈstrætədʒi/', m:'n.策略', e:'We need a new strategy.' },
+  { w:'strength', p:'/streŋθ/', m:'n.力量', e:'Her strength is patience.' },
+  { w:'struggle', p:'/ˈstrʌɡl/', m:'n./v.奋斗', e:'Life is a struggle.' },
+  { w:'sufficient', p:'/səˈfɪʃnt/', m:'adj.足够的', e:'We have sufficient food.' },
+  { w:'suggest', p:'/səˈdʒest/', m:'v.建议', e:'I suggest you rest.' },
+  { w:'summarize', p:'/ˈsʌməraɪz/', m:'v.总结', e:'Please summarize the text.' },
+  { w:'supply', p:'/səˈplaɪ/', m:'n./v.供应', e:'The supply is limited.' },
+  { w:'survive', p:'/səˈvaɪv/', m:'v.生存', e:'Only the strong survive.' },
+  { w:'suspect', p:'/səˈspekt/', m:'v.怀疑', e:'I suspect he is lying.' },
+  { w:'sustain', p:'/səˈsteɪn/', m:'v.维持', e:'Can you sustain this effort?' },
+  { w:'target', p:'/ˈtɑːɡɪt/', m:'n.目标', e:'We hit our target.' },
+  { w:'technique', p:'/tekˈniːk/', m:'n.技术', e:'She learned a new technique.' },
+  { w:'tend', p:'/tend/', m:'v.倾向', e:'I tend to agree with you.' },
+  { w:'tradition', p:'/trəˈdɪʃn/', m:'n.传统', e:'It is a Chinese tradition.' },
+  { w:'transfer', p:'/trænsˈfɜːr/', m:'v.转移', e:'Please transfer the money.' },
+  { w:'transform', p:'/trænsˈfɔːm/', m:'v.转变', e:'Education can transform lives.' },
+  { w:'translate', p:'/trænsˈleɪt/', m:'v.翻译', e:'Can you translate this?' },
+  { w:'transport', p:'/trænˈspɔːt/', m:'v.运输 n.交通', e:'Public transport is convenient.' },
+  { w:'treat', p:'/triːt/', m:'v.对待', e:'Treat others with respect.' },
+  { w:'trend', p:'/trend/', m:'n.趋势', e:'What is the latest trend?' },
+  { w:'unique', p:'/juˈniːk/', m:'adj.独特的', e:'Everyone is unique.' },
+  { w:'valid', p:'/ˈvælɪd/', m:'adj.有效的', e:'This ticket is valid.' },
+  { w:'valuable', p:'/ˈvæljuəbl/', m:'adj.有价值的', e:'Time is valuable.' },
+  { w:'vary', p:'/ˈveəri/', m:'v.变化', e:'Prices vary by season.' },
+  { w:'vehicle', p:'/ˈviːəkl/', m:'n.车辆', e:'Park your vehicle here.' },
+  { w:'volume', p:'/ˈvɒljuːm/', m:'n.音量,体积', e:'Turn down the volume.' },
+  { w:'wealth', p:'/welθ/', m:'n.财富', e:'Health is better than wealth.' }
+];
+
+// --- Grammar Topics (12 sets) ---
+const grammarTopics = [
+  {
+    title: '一般现在时 vs 一般过去时',
+    logic: '一般现在时表示习惯性、经常性的动作或客观事实；一般过去时表示过去某个时间发生的动作或状态。关键在于时间状语和动词形式的变化。',
+    notes: '1. 一般现在时：主语+V原形/V-s（第三人称单数）\n2. 一般过去时：主语+V-ed（规则动词）\n3. 常见时间状语：always, usually, every day（现在）；yesterday, last week, ago（过去）',
+    exercises: [
+      { q: 'She ___ (go) to school every day.', a: 'goes' },
+      { q: 'He ___ (visit) his grandma last Sunday.', a: 'visited' },
+      { q: 'The earth ___ (move) around the sun.', a: 'moves' }
+    ]
+  },
+  {
+    title: '现在进行时',
+    logic: '表示说话时刻正在进行的动作，或现阶段正在做的事。结构为 be + doing。',
+    notes: '1. 构成：am/is/are + V-ing\n2. 标志词：now, at the moment, look, listen\n3. V-ing变化规则：直接加ing；以e结尾去e加ing；重读闭音节双写末尾辅音加ing',
+    exercises: [
+      { q: 'Look! The baby ___ (sleep).', a: 'is sleeping' },
+      { q: 'They ___ (study) English now.', a: 'are studying' },
+      { q: 'I ___ (write) a letter at the moment.', a: 'am writing' }
+    ]
+  },
+  {
+    title: '现在完成时',
+    logic: '表示过去发生的动作对现在造成的影响，或从过去持续到现在的动作。结构为 have/has + 过去分词。',
+    notes: '1. 构成：have/has + V-ed（过去分词）\n2. 标志词：already, yet, just, ever, never, since, for\n3. have been to（去过已回）vs have gone to（去了未回）',
+    exercises: [
+      { q: 'I ___ (finish) my homework already.', a: 'have finished' },
+      { q: 'She ___ (be) to Beijing twice.', a: 'has been' },
+      { q: 'They ___ (live) here since 2010.', a: 'have lived' }
+    ]
+  },
+  {
+    title: '被动语态',
+    logic: '当动作的执行者不重要或未知，或想强调动作的承受者时使用。结构为 be + 过去分词。',
+    notes: '1. 构成：be + V-ed（过去分词）\n2. 各时态被动：一般现在时 am/is/are+done；一般过去时 was/were+done\n3. 带by短语表示动作执行者',
+    exercises: [
+      { q: 'The book ___ (write) by him.', a: 'was written' },
+      { q: 'English ___ (speak) all over the world.', a: 'is spoken' },
+      { q: 'The room ___ (clean) every day.', a: 'is cleaned' }
+    ]
+  },
+  {
+    title: '定语从句',
+    logic: '用来修饰名词或代词的从句，被修饰的词叫先行词。关系代词的选择取决于先行词是人还是物。',
+    notes: '1. 关系代词：who（人，主格），whom（人，宾格），which（物），that（人或物）\n2. 关系副词：when（时间），where（地点），why（原因）\n3. 限制性定语从句不可省略，非限制性用逗号隔开',
+    exercises: [
+      { q: 'The man ___ is standing there is my teacher.', a: 'who/that' },
+      { q: 'This is the book ___ I bought yesterday.', a: 'which/that' },
+      { q: 'I remember the day ___ we first met.', a: 'when' }
+    ]
+  },
+  {
+    title: '名词性从句',
+    logic: '在句中起名词作用的从句，可作主语、宾语、表语或同位语。关键是引导词的选择和语序（陈述语序）。',
+    notes: '1. 引导词：that（无意义）, whether/if（是否）, what/who/which等疑问词\n2. 主语从句：That he is right is true.\n3. 宾语从句：I know that he is right.\n4. 注意：宾语从句用陈述语序',
+    exercises: [
+      { q: '___ he will come is still unknown.', a: 'Whether' },
+      { q: 'I wonder ___ she is.', a: 'who' },
+      { q: 'Tell me ___ you did yesterday.', a: 'what' }
+    ]
+  },
+  {
+    title: '虚拟语气',
+    logic: '表示与事实相反的假设或不太可能实现的情况。注意不同时间下动词形式的变化。',
+    notes: '1. 与现在相反：If + 过去时，主句 would/could/should + V原形\n2. 与过去相反：If + had done，主句 would have done\n3. 与将来相反：If + were to do / should do\n4. wish + 过去时（现在）/ 过去完成时（过去）',
+    exercises: [
+      { q: 'If I ___ (be) you, I would go.', a: 'were' },
+      { q: 'If he ___ (study) harder, he would have passed.', a: 'had studied' },
+      { q: 'I wish I ___ (have) more time.', a: 'had' }
+    ]
+  },
+  {
+    title: '非谓语动词',
+    logic: '动词不定式、动名词和分词在句中不能作谓语，但可作主语、宾语、定语、状语等。',
+    notes: '1. 不定式 to do：表目的、将来\n2. 动名词 doing：作主语、宾语\n3. 现在分词 doing：表主动、进行\n4. 过去分词 done：表被动、完成',
+    exercises: [
+      { q: 'I want ___ (learn) English.', a: 'to learn' },
+      { q: '___ (read) is fun.', a: 'Reading' },
+      { q: 'The ___ (break) cup is useless.', a: 'broken' }
+    ]
+  },
+  {
+    title: '情态动词',
+    logic: '表示说话人的语气和态度，如能力、许可、必要、推测等。情态动词后接动词原形。',
+    notes: '1. can/could：能力、许可\n2. must：必须（must not 禁止）\n3. should：应该\n4. may/might：可能、许可\n5. must have done：肯定已经（推测）\n6. should have done：本应该做但没做',
+    exercises: [
+      { q: 'You ___ (must) finish it today.', a: 'must' },
+      { q: 'He ___ (can) swim when he was five.', a: 'could' },
+      { q: 'You ___ (should) have told me earlier.', a: 'should' }
+    ]
+  },
+  {
+    title: '倒装句',
+    logic: '为了强调某部分或因语法需要，将谓语或助动词放在主语前面。分完全倒装和部分倒装。',
+    notes: '1. 完全倒装：Here comes the bus. / On the wall hangs a picture.\n2. 部分倒装（否定词开头）：Never have I seen such a thing.\n3. Only + 状语开头：Only then did I understand.\n4. So/Neither 开头：So do I. / Neither do I.',
+    exercises: [
+      { q: 'Never ___ (I) seen such beauty.', a: 'have I' },
+      { q: 'Only then ___ (he) understand.', a: 'did he' },
+      { q: 'Here ___ (come) the bus.', a: 'comes' }
+    ]
+  },
+  {
+    title: '主谓一致',
+    logic: '谓语动词在人称和数上要与主语保持一致。注意就近原则、意义一致原则等特殊情况。',
+    notes: '1. 就近原则：Neither you nor I am right. / Not only...but also...\n2. 就远原则：Tom, as well as his friends, likes music.\n3. 集合名词：family作整体看用单数，强调成员用复数\n4. The number of + 复数名词用单数；A number of + 复数名词用复数',
+    exercises: [
+      { q: 'Neither he nor I ___ (be) a student.', a: 'am' },
+      { q: 'The number of students ___ (be) 50.', a: 'is' },
+      { q: 'Tom, as well as his friends, ___ (like) music.', a: 'likes' }
+    ]
+  },
+  {
+    title: '状语从句',
+    logic: '在句中作状语的从句，修饰主句的动词、形容词或副词。分为时间、原因、条件、让步、目的、结果等类型。',
+    notes: '1. 时间：when, while, as, before, after, since, until\n2. 原因：because, since, as, for\n3. 条件：if, unless, as long as\n4. 让步：though, although, even if\n5. 目的：so that, in order that\n6. 结果：so...that, such...that',
+    exercises: [
+      { q: 'I will wait ___ you come back.', a: 'until' },
+      { q: '___ it rains, we will stay home.', a: 'If' },
+      { q: 'He worked hard ___ he could pass the exam.', a: 'so that' }
+    ]
+  }
+];
+
+// --- IELTS Topics (8 sets) ---
+const ieltsTopics = [
+  {
+    title: '雅思考试全科普',
+    intro: '雅思（IELTS）是国际英语语言测试系统，用于评估非英语母语者的英语能力。分为学术类（A类）和培训类（G类），留学一般考A类。',
+    sections: '【听力】4部分，40题，30分钟+10分钟誊写\n【阅读】3篇文章，40题，60分钟\n【写作】小作文（图表）+大作文（议论文），60分钟\n【口语】3部分，11-14分钟，面对面考试',
+    scores: '满分9分，各科单独评分后取平均分。一般大学要求6.0-7.5分。',
+    route: '高中生长期备考路线：\n1. 先打基础：词汇量达到6000+\n2. 分项训练：听说读写逐一突破\n3. 模考冲刺：考前2个月密集模考\n4. 保持日常英语输入：看英文新闻、听英文播客'
+  },
+  {
+    title: '雅思听力入门',
+    intro: '雅思听力是考试第一项，考查理解日常英语和学术英语对话的能力。',
+    sections: 'Part1：日常对话（填表题为主）\nPart2：日常独白（选择/配对题为主）\nPart3：学术讨论（选择/配对题为主）\nPart4：学术讲座（填空题为主）',
+    scores: '听力评分：答对39-40为9分，30-32为7分，23-26为6分',
+    route: '基础训练方向：\n1. 每天听写练习，训练捕捉关键词\n2. 熟悉各种口音：英音、澳音等\n3. 练习预判题目，提前读题\n4. 积累高频场景词汇'
+  },
+  {
+    title: '雅思阅读入门',
+    intro: '雅思阅读考查快速理解和信息定位能力，文章来自书籍、期刊、报纸等。',
+    sections: '三篇文章约2150-2750词\n题型：填空、判断T/F/NG、匹配、选择、小标题\n文章类型：说明文、议论文、描述文',
+    scores: '阅读评分：答对39-40为9分，30-32为7分，23-26为6分',
+    route: '基础训练方向：\n1. 训练略读（skimming）和扫读（scanning）\n2. 积累同义替换词汇\n3. 练习长难句分析\n4. 每天至少精读一篇英文文章'
+  },
+  {
+    title: '雅思写作入门',
+    intro: '雅思写作考查学术写作能力，要求逻辑清晰、用词准确、语法正确。',
+    sections: '小作文（Task1）：描述图表（线图、柱图、饼图、表格、地图、流程图），150词，20分钟\n大作文（Task2）：议论文，250词，40分钟',
+    scores: '写作评分标准：任务完成、连贯与衔接、词汇、语法。各占25%。',
+    route: '基础训练方向：\n1. 积累各话题观点和素材\n2. 学习不同图表的描述方法\n3. 练习议论文结构：开头-主体-结尾\n4. 背诵常用句型和连接词'
+  },
+  {
+    title: '雅思口语入门',
+    intro: '雅思口语是面对面考试，考查日常交流和表达观点的能力。与考官一对一交流。',
+    sections: 'Part1：日常问答（3-5分钟），关于个人情况\nPart2：个人陈述（3-4分钟），根据卡片说2分钟\nPart3：深入讨论（4-5分钟），就Part2话题展开',
+    scores: '口语评分标准：流利度、词汇、语法、发音。各占25%。',
+    route: '基础训练方向：\n1. 积累话题素材：人物、地点、事件、物品\n2. 每天练习开口说英语15分钟\n3. 录音自测，纠正发音和语法\n4. 训练即兴表达能力'
+  },
+  {
+    title: '雅思词汇规划',
+    intro: '雅思考试需要约6000-8000词汇量。高中生约3000-3500词，需要系统扩充。',
+    sections: '核心词汇分类：\n1. 学术高频词（约2000）\n2. 话题词汇（环境、教育、科技、社会等）\n3. 同义替换词组\n4. 搭配和固定表达',
+    scores: '词汇量参考：3500词≈雅思5分，6000词≈6分，8000词≈7分',
+    route: '基础训练方向：\n1. 每天背30-50个新词，循环复习\n2. 按话题分类记忆\n3. 在语境中学习词汇\n4. 建立同义词替换本'
+  },
+  {
+    title: '雅思备考时间规划',
+    intro: '高中生从零开始备考雅思，建议至少6-12个月的准备时间，分阶段稳步推进。',
+    sections: '阶段1（1-3月）：夯实基础，词汇+语法\n阶段2（4-6月）：分项训练，掌握题型\n阶段3（7-9月）：强化练习，提升速度\n阶段4（10-12月）：模考冲刺，查漏补缺',
+    scores: '每月目标参考：基础阶段提0.5分，强化阶段每月提0.5分',
+    route: '基础训练方向：\n1. 制定周计划，听说读写均衡\n2. 每周模考一次，记录进步\n3. 建立错题本，定期复盘\n4. 保持积极心态，不要急于求成'
+  },
+  {
+    title: '雅思与高考英语对比',
+    intro: '雅思和高考英语在考查重点和难度上有显著差异。了解差异有助于更有针对性地备考。',
+    sections: '高考英语：侧重语法和阅读理解，词汇量3500\n雅思：侧重综合应用能力，词汇量6000+\n高考：选择题为主\n雅思：题型多样，包含主观题',
+    scores: '高考130+≈雅思5.5-6.0；高考140+≈雅思6.0-6.5',
+    route: '基础训练方向：\n1. 从高考词汇扩展到雅思词汇\n2. 加强听力和口语训练（高考弱项）\n3. 学习学术写作（高考不考）\n4. 培养英语思维，减少中文翻译依赖'
+  }
+];
+
+// --- English State ---
+let englishState = {
+  wordMode: 'new',
+  wordIndex: 0,
+  showMeaning: false
+};
+
+function initEnglish() {
+  const data = loadData('nx_english_words', {
+    learnedWords: [],
+    wrongWords: [],
+    todayDate: '',
+    todayNew: 0,
+    todayReview: 0,
+    wordIndex: 0
+  });
+
+  // Reset daily stats if new day
+  if (data.todayDate !== todayStr()) {
+    data.todayDate = todayStr();
+    data.todayNew = 0;
+    data.todayReview = 0;
+    saveData('nx_english_words', data);
+  }
+
+  // Render stats
+  renderEnglishStats();
+
+  // Load words for today
+  englishState.wordIndex = data.wordIndex || 0;
+  englishState.wordMode = 'new';
+  englishState.showMeaning = false;
+
+  // Reset mode toggle
+  document.querySelectorAll('#view-english .mode-toggle .mode-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === 0);
+  });
+
+  renderWordCard();
+
+  // Render wrong words
+  renderWrongWords();
+
+  // Grammar topic
+  renderGrammarTopic();
+
+  // IELTS topic
+  renderIeltsTopic();
+
+  // Load grammar notes
+  const gNotes = loadData('nx_english_grammar_notes', {});
+  const wk = getWeekKey();
+  document.getElementById('grammarNotes').value = gNotes[wk] ? gNotes[wk].notes : '';
+  document.getElementById('grammarDone').checked = gNotes[wk] ? gNotes[wk].done : false;
+
+  // Load IELTS notes
+  const iNotes = loadData('nx_english_ielts_notes', {});
+  document.getElementById('ieltsNotes').value = iNotes[wk] ? iNotes[wk].notes : '';
+  document.getElementById('ieltsDone').checked = iNotes[wk] ? iNotes[wk].done : false;
+}
+
+function renderEnglishStats() {
+  const data = loadData('nx_english_words', {});
+  const learned = (data.learnedWords || []).length;
+  const wrongCount = (data.wrongWords || []).length;
+  const totalWords = wordBank.length;
+
+  document.getElementById('englishStats').innerHTML = `
+    <div class="stat-pill">📊 已学单词 <span class="stat-num">${learned}</span>/${totalWords}</div>
+    <div class="stat-pill">🆕 今日新词 <span class="stat-num">${data.todayNew||0}</span></div>
+    <div class="stat-pill">🔄 今日复习 <span class="stat-num">${data.todayReview||0}</span></div>
+    <div class="stat-pill">❌ 错词本 <span class="stat-num">${wrongCount}</span></div>
+  `;
+}
+
+function getTodayWords(mode) {
+  const data = loadData('nx_english_words', {});
+  const learned = data.learnedWords || [];
+
+  if (mode === 'review') {
+    // Review learned words
+    return learned.map(idx => ({ ...wordBank[idx], idx }));
+  } else {
+    // New words - get unlearned ones, rotated by day
+    const unlearned = [];
+    for (let i = 0; i < wordBank.length; i++) {
+      if (!learned.includes(i)) unlearned.push(i);
+    }
+    // Rotate by day - pick starting point based on date
+    const dayOffset = Math.floor(Date.now() / 86400000) % Math.max(unlearned.length, 1);
+    const rotated = [];
+    for (let i = 0; i < unlearned.length; i++) {
+      rotated.push({ ...wordBank[unlearned[(i + dayOffset) % unlearned.length]], idx: unlearned[(i + dayOffset) % unlearned.length] });
+    }
+    return rotated;
+  }
+}
+
+function renderWordCard() {
+  const words = getTodayWords(englishState.wordMode);
+  if (words.length === 0) {
+    let msg = englishState.wordMode === 'review'
+      ? '🎉 暂无可复习的单词，先去学习新词吧！'
+      : '🎉 所有单词已学完！切换到复习模式继续巩固。';
+    document.getElementById('wordCardArea').innerHTML = `<div class="word-card"><p>${msg}</p></div>`;
+    return;
+  }
+
+  const idx = englishState.wordIndex % words.length;
+  const w = words[idx];
+
+  let html = `<div class="word-card">
+    <div class="word">${w.w}</div>
+    <div class="phonetic">${w.p}</div>`;
+  if (englishState.showMeaning) {
+    html += `<div class="meaning">${w.m}</div>
+    <div class="example">${w.e}</div>`;
+  } else {
+    html += `<div class="meaning" style="color:#aaa">点击"显示释义"查看</div>`;
+  }
+  html += `<div class="text-sm text-muted mt-12">${idx + 1} / ${words.length}</div>
+  </div>`;
+
+  document.getElementById('wordCardArea').innerHTML = html;
+}
+
+function setWordMode(mode, btn) {
+  englishState.wordMode = mode;
+  englishState.wordIndex = 0;
+  englishState.showMeaning = false;
+  document.querySelectorAll('#view-english .mode-toggle .mode-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderWordCard();
+}
+
+function showWordMeaning() {
+  englishState.showMeaning = true;
+  renderWordCard();
+}
+
+function nextWord() {
+  englishState.wordIndex++;
+  englishState.showMeaning = false;
+  renderWordCard();
+}
+
+function prevWord() {
+  if (englishState.wordIndex > 0) englishState.wordIndex--;
+  englishState.showMeaning = false;
+  renderWordCard();
+}
+
+function markWordKnown() {
+  const data = loadData('nx_english_words', {});
+  if (!data.learnedWords) data.learnedWords = [];
+
+  const words = getTodayWords(englishState.wordMode);
+  if (words.length === 0) return;
+  const w = words[englishState.wordIndex % words.length];
+
+  if (englishState.wordMode === 'new') {
+    if (!data.learnedWords.includes(w.idx)) {
+      data.learnedWords.push(w.idx);
+      data.todayNew = (data.todayNew || 0) + 1;
+    }
+  } else {
+    data.todayReview = (data.todayReview || 0) + 1;
+  }
+
+  // Remove from wrong words if there
+  if (data.wrongWords) {
+    data.wrongWords = data.wrongWords.filter(item => item.word !== w.w);
+  }
+
+  saveData('nx_english_words', data);
+  renderEnglishStats();
+  renderWrongWords();
+  nextWord();
+}
+
+function markWordWrong() {
+  const data = loadData('nx_english_words', {});
+  if (!data.wrongWords) data.wrongWords = [];
+
+  const words = getTodayWords(englishState.wordMode);
+  if (words.length === 0) return;
+  const w = words[englishState.wordIndex % words.length];
+
+  // Check if already in wrong words
+  if (!data.wrongWords.find(item => item.word === w.w)) {
+    data.wrongWords.push({ word: w.w, meaning: w.m, phonetic: w.p, addedAt: todayStr() });
+  }
+
+  if (englishState.wordMode === 'review') {
+    data.todayReview = (data.todayReview || 0) + 1;
+  }
+
+  saveData('nx_english_words', data);
+  renderEnglishStats();
+  renderWrongWords();
+  nextWord();
+}
+
+function renderWrongWords() {
+  const data = loadData('nx_english_words', {});
+  const wrong = data.wrongWords || [];
+  if (wrong.length === 0) {
+    document.getElementById('wrongWords').innerHTML = '<div class="empty-state">暂无记错的单词，继续保持！</div>';
+    return;
+  }
+  let html = '';
+  wrong.forEach((item, i) => {
+    html += `<div class="list-item">
+      <div>
+        <div style="font-weight:600">${item.word} <span class="text-muted text-sm">${item.phonetic||''}</span></div>
+        <div class="text-sm text-muted">${escapeHtml(item.meaning||'')}</div>
+      </div>
+      <button class="del-btn" onclick="removeWrongWord(${i})">✕</button>
+    </div>`;
+  });
+  document.getElementById('wrongWords').innerHTML = html;
+}
+
+function removeWrongWord(idx) {
+  const data = loadData('nx_english_words', {});
+  if (data.wrongWords) {
+    data.wrongWords.splice(idx, 1);
+    saveData('nx_english_words', data);
+    renderWrongWords();
+    renderEnglishStats();
+  }
+}
+
+function renderGrammarTopic() {
+  const week = getISOWeek();
+  const topic = grammarTopics[(week - 1) % grammarTopics.length];
+
+  let html = `<div class="content-block">
+    <div class="block-title">📖 ${topic.title}</div>
+    <div class="block-content"><b>核心底层逻辑：</b><br>${topic.logic.replace(/\n/g, '<br>')}</div>
+    <div class="block-content"><b>关键注意点：</b><br>${topic.notes.replace(/\n/g, '<br>')}</div>
+  </div>`;
+
+  html += '<div class="quiz-area"><b>📝 巩固小题</b></div>';
+  topic.exercises.forEach((ex, i) => {
+    html += `<div class="content-block">
+      <div class="text-sm">${i+1}. ${ex.q}</div>
+      <div class="text-sm text-muted mt-8" id="grammarAns${i}" style="display:none">✅ 答案：${ex.a}</div>
+      <button class="btn btn-sm btn-mint mt-8" onclick="document.getElementById('grammarAns${i}').style.display='block'">查看答案</button>
+    </div>`;
+  });
+
+  document.getElementById('grammarTopic').innerHTML = html;
+}
+
+function renderIeltsTopic() {
+  const week = getISOWeek();
+  const topic = ieltsTopics[(week - 1) % ieltsTopics.length];
+
+  let html = `<div class="content-block">
+    <div class="block-title">✈ ${topic.title}</div>
+    <div class="block-content"><b>简介：</b><br>${topic.intro}</div>
+    <div class="block-content"><b>四科介绍：</b><br>${topic.sections.replace(/\n/g, '<br>')}</div>
+    <div class="block-content"><b>分数含义：</b><br>${topic.scores}</div>
+    <div class="block-content"><b>备考路线：</b><br>${topic.route.replace(/\n/g, '<br>')}</div>
+  </div>`;
+
+  document.getElementById('ieltsTopic').innerHTML = html;
+}
+
+function saveGrammarNotes() {
+  const data = loadData('nx_english_grammar_notes', {});
+  const wk = getWeekKey();
+  data[wk] = {
+    notes: document.getElementById('grammarNotes').value,
+    done: document.getElementById('grammarDone').checked,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_english_grammar_notes', data);
+  alert('✅ 语法笔记已保存！');
+}
+
+function saveIeltsNotes() {
+  const data = loadData('nx_english_ielts_notes', {});
+  const wk = getWeekKey();
+  data[wk] = {
+    notes: document.getElementById('ieltsNotes').value,
+    done: document.getElementById('ieltsDone').checked,
+    savedAt: new Date().toISOString()
+  };
+  saveData('nx_english_ielts_notes', data);
+  alert('✅ 雅思笔记已保存！');
+}
+
+// ============================================================
+//  Module 9: Daily Plan
+// ============================================================
+const defaultTasks = [
+  { text: '读书30分钟', done: false },
+  { text: '背英语单词', done: false },
+  { text: '完成今日学习计划', done: false },
+  { text: '运动打卡', done: false },
+  { text: '记录今日支出', done: false }
+];
+
+function initPlan() {
+  const today = todayStr();
+  document.getElementById('planDate').innerHTML = `
+    <div class="date-text">${formatDateDisplay(today)}</div>
+    <div class="week-text">第${getISOWeek()}周</div>
+  `;
+
+  const plans = loadData('nx_daily_plans', {});
+  if (!plans[today]) {
+    plans[today] = defaultTasks.map(t => ({ ...t }));
+    saveData('nx_daily_plans', plans);
+  }
+
+  document.getElementById('planHistoryDate').value = today;
+  renderTasks();
+  renderPlanHistory();
+}
+
+function renderTasks() {
+  const today = todayStr();
+  const plans = loadData('nx_daily_plans', {});
+  const tasks = plans[today] || [];
+
+  const completed = tasks.filter(t => t.done).length;
+  const total = tasks.length;
+  const pct = total > 0 ? (completed / total * 100).toFixed(0) : 0;
+
+  document.getElementById('planStats').innerHTML = `
+    <div class="stat-pill">📋 总任务 <span class="stat-num">${total}</span></div>
+    <div class="stat-pill">✅ 已完成 <span class="stat-num">${completed}</span></div>
+    <div class="stat-pill">📊 完成率 <span class="stat-num">${pct}%</span></div>
+    <div class="progress-bar" style="flex:1;min-width:100px"><div class="progress-fill" style="width:${pct}%"></div></div>
+  `;
+
+  if (tasks.length === 0) {
+    document.getElementById('taskList').innerHTML = '<div class="empty-state">今日暂无任务，添加一个吧！</div>';
+    return;
+  }
+
+  let html = '';
+  tasks.forEach((t, i) => {
+    html += `<div class="list-item">
+      <div class="check-item ${t.done ? 'checked' : ''}" style="flex:1">
+        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${i})">
+        <span>${escapeHtml(t.text)}</span>
+      </div>
+      <button class="del-btn" onclick="deleteTask(${i})">✕</button>
+    </div>`;
+  });
+  document.getElementById('taskList').innerHTML = html;
+}
+
+function addTask() {
+  const text = document.getElementById('newTask').value.trim();
+  if (!text) return;
+
+  const today = todayStr();
+  const plans = loadData('nx_daily_plans', {});
+  if (!plans[today]) plans[today] = [];
+  plans[today].push({ text: text, done: false });
+  saveData('nx_daily_plans', plans);
+
+  document.getElementById('newTask').value = '';
+  renderTasks();
+}
+
+function toggleTask(idx) {
+  const today = todayStr();
+  const plans = loadData('nx_daily_plans', {});
+  if (plans[today] && plans[today][idx]) {
+    plans[today][idx].done = !plans[today][idx].done;
+    saveData('nx_daily_plans', plans);
+    renderTasks();
+  }
+}
+
+function deleteTask(idx) {
+  const today = todayStr();
+  const plans = loadData('nx_daily_plans', {});
+  if (plans[today]) {
+    plans[today].splice(idx, 1);
+    saveData('nx_daily_plans', plans);
+    renderTasks();
+  }
+}
+
+function loadHistoryPlan() {
+  renderPlanHistory();
+}
+
+function renderPlanHistory() {
+  const selDate = document.getElementById('planHistoryDate').value;
+  if (!selDate) {
+    document.getElementById('planHistory').innerHTML = '<div class="empty-state">请选择日期</div>';
+    return;
+  }
+
+  const plans = loadData('nx_daily_plans', {});
+  const tasks = plans[selDate] || [];
+
+  if (tasks.length === 0) {
+    document.getElementById('planHistory').innerHTML = '<div class="empty-state">该日期暂无计划记录</div>';
+    return;
+  }
+
+  const completed = tasks.filter(t => t.done).length;
+  let html = `<div class="text-sm text-muted mb-12">${formatDateDisplay(selDate)} | 完成 ${completed}/${tasks.length}</div>`;
+  tasks.forEach(t => {
+    html += `<div class="check-item ${t.done ? 'checked' : ''}">
+      <span>${t.done ? '✅' : '⬜'} ${escapeHtml(t.text)}</span>
+    </div>`;
+  });
+  document.getElementById('planHistory').innerHTML = html;
+}
+
+// ============================================================
+//  PWA: Service Worker & Manifest
+// ============================================================
+function setupPWA() {
+  // Inline manifest via blob
+  // Use simple ASCII-only SVG icon to avoid btoa Latin1 range error
+  const iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">'
+    + '<rect width="512" height="512" rx="100" fill="#FFB5C2"/>'
+    + '<text x="256" y="340" font-size="280" font-family="serif" text-anchor="middle" fill="white">N</text>'
+    + '<text x="256" y="420" font-size="40" font-family="sans-serif" text-anchor="middle" fill="white">Workbench</text>'
+    + '</svg>';
+  // Encode for data URL safely without btoa Latin1 issues
+  const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSvg);
+
+  const manifest = {
+    name: '凝馨的工作台',
+    short_name: '凝馨工作台',
+    description: '个人工作台 - 学习、理财、成长',
+    start_url: '.',
+    display: 'standalone',
+    background_color: '#FFF5F5',
+    theme_color: '#FFB5C2',
+    icons: [
+      { src: iconUrl, sizes: '192x192', type: 'image/svg+xml' },
+      { src: iconUrl, sizes: '512x512', type: 'image/svg+xml' }
+    ]
+  };
+
+  // Manifest via data URL (more reliable than blob URL for manifest)
+  const manifestStr = JSON.stringify(manifest);
+  const manifestUrl = 'data:application/manifest+json,' + encodeURIComponent(manifestStr);
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = manifestUrl;
+  document.head.appendChild(link);
+
+  // Apple touch icon
+  const appleLink = document.createElement('link');
+  appleLink.rel = 'apple-touch-icon';
+  appleLink.href = iconUrl;
+  document.head.appendChild(appleLink);
+
+  // Favicon
+  const favLink = document.createElement('link');
+  favLink.rel = 'icon';
+  favLink.href = iconUrl;
+  document.head.appendChild(favLink);
+
+  // Service Worker - inline via data URL for offline caching
+  // Note: SW registration may fail on file:// or some origins; that's OK,
+  // the page still works fully offline because all content is inline + localStorage
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    const swCode = `
+      const CACHE_NAME = 'ningxin-workbench-v2';
+      self.addEventListener('install', function(e) {
+        self.skipWaiting();
+      });
+      self.addEventListener('activate', function(e) {
+        e.waitUntil(self.clients.claim());
+      });
+      self.addEventListener('fetch', function(e) {
+        if (e.request.method !== 'GET') return;
+        e.respondWith(
+          caches.open(CACHE_NAME).then(function(cache) {
+            return cache.match(e.request).then(function(cached) {
+              var fetchPromise = fetch(e.request).then(function(networkRes) {
+                if (networkRes && networkRes.status === 200) {
+                  cache.put(e.request, networkRes.clone());
+                }
+                return networkRes;
+              }).catch(function() {
+                return cached;
+              });
+              return cached || fetchPromise;
+            });
+          })
+        );
+      });
+    `;
+    try {
+      var swBlob = new Blob([swCode], { type: 'application/javascript' });
+      var swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).catch(function(err) {
+        console.log('SW registration skipped:', err.message);
+      });
+    } catch(err) {
+      console.log('SW setup skipped:', err.message);
+    }
+  }
+}
+
+// ============================================================
+//  Init
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+  setupPWA();
+  renderDashboard();
+
+  // Enter key to add task
+  document.getElementById('newTask').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') addTask();
+  });
+
+  // Enter key to add expense
+  document.getElementById('expAmount').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') addExpense();
+  });
+});
+</script>
+</body>
+</html>
